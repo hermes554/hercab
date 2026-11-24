@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hercab">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<title>Hercab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Inter+Tight:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: quiet, scholarly, nightly study — Hermes Society's house style.
+   IDEA: a society's index card: bold grotesque word, italic serif gloss, one wine rule.
+   PICTURE: the flip card itself, large, front = word, back = Türkçe + example.
+   COLOUR and TYPE: black #0a0a0a, cream #f2ebe0, wine #7a1622; Inter Tight 800 + Cormorant italic.
+   LAYOUT: left rail (bottom bar on phones), one column of calm cards, content ≤1080px. */
+:root{color-scheme:dark;--bg:#0a0a0a;--s1:#141312;--s2:#1c1a19;--ln:#2b2826;--ink:#f2ebe0;--mu:#aaa298;--dim:#77716a;--wine:#7a1622;--wine2:#9b2330;--rose:#e07a84;--ok:#9fbf8f;
+--sans:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;--serif:"Cormorant Garamond",Georgia,serif}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.app{display:grid;grid-template-columns:104px minmax(0,1fr);min-height:100dvh}
+.rail{position:sticky;top:0;height:100dvh;border-right:1px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:4px;padding:28px 0}
+.mono{width:64px;height:64px;border:1px solid var(--ln);border-radius:16px;display:grid;place-items:center;margin-bottom:28px;position:relative}
+.mono b{font:800 30px/1 var(--sans);letter-spacing:-.02em}.mono i{font:600 24px/1 var(--serif)}
+.mono::after{content:"";position:absolute;left:18px;right:18px;bottom:12px;height:2px;background:var(--wine2)}
+.nav{width:80px;min-height:64px;border:0;background:none;color:var(--dim);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:14px;font-size:13px}
+.nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav[aria-current]{color:var(--ink)}.nav[aria-current] svg{stroke:var(--rose)}
+.nav:hover{color:var(--ink)}
+main{padding:clamp(14px,2.4vw,28px) max(3.5vw,16px) 28px;max-width:1120px;width:100%;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:clamp(12px,2vw,22px)}
+.lock{display:inline-grid;line-height:1}
+.lock b{font:800 22px/1 var(--sans);letter-spacing:-.01em}
+.lock span{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:-1px}
+.lock span::before{content:"";width:26px;height:1.5px;background:var(--wine2)}
+.lock em{font:500 17px/1 var(--serif)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;background:var(--s1);border:1px solid var(--ln);font-weight:600;font-size:14px;white-space:nowrap}
+.chip .d{width:8px;height:8px;border-radius:50%;background:var(--wine2)}
+.brand{margin:0;font:800 clamp(34px,5vw,54px)/1 var(--sans);letter-spacing:-.03em}
+.brand em{font:600 1.04em/1 var(--serif);letter-spacing:0;margin-left:.02em}
+.rule{display:flex;align-items:center;gap:14px;margin:8px 0 16px;color:var(--mu)}
+.rule::before{content:"";width:64px;height:2px;background:var(--wine2)}
+.lab{font:700 12.5px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin:0}
+h2{font:800 26px/1.1 var(--sans);letter-spacing:-.02em;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.card{background:var(--s1);border:1px solid var(--ln);border-radius:20px;padding:clamp(16px,2.2vw,24px)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.big{font:800 clamp(44px,6vw,64px)/1 var(--sans);letter-spacing:-.04em}
+.bar{height:6px;border-radius:9px;background:var(--s2);overflow:hidden;margin:12px 0}
+.bar i{display:block;height:100%;background:var(--wine2);border-radius:9px;transition:width .4s}
+.btn{min-height:52px;padding:0 20px;border-radius:14px;border:1px solid var(--ln);background:var(--s2);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{border-color:#4a4440}
+.btn.p{background:var(--wine2);border-color:var(--wine2);color:#fff}.btn.p:hover{background:#ae2a38}
+.btn.w{width:100%}.btn.s{min-height:44px;padding:0 14px;font-size:15px}
+.btn[disabled]{opacity:.45;cursor:default}
+.cnt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.cnt button{background:none;border:1px solid var(--ln);border-radius:12px;padding:8px 10px;text-align:left;min-height:52px}
+.cnt b{display:block;font:800 22px/1.1 var(--sans)}.cnt span{color:var(--mu);font-size:14px}
+.cnt .h b{color:var(--rose)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px;text-align:center}
+.week i{display:block;aspect-ratio:1;max-width:34px;margin:0 auto 4px;border-radius:50%;border:1.5px solid var(--ln)}
+.week .on i{background:var(--wine2);border-color:var(--wine2)}.week .now i{border-color:var(--rose)}
+.week span{font-size:13px;color:var(--dim)}.week .now span{color:var(--ink)}
+.wotd{font:800 clamp(30px,4vw,40px)/1 var(--sans);letter-spacing:-.02em;margin:8px 0 2px}
+.tr{font:600 clamp(26px,3.4vw,34px)/1.1 var(--serif);color:var(--ink)}
+.spk{width:46px;height:46px;flex:none;border-radius:50%;border:0;background:var(--wine2);display:grid;place-items:center}
+.spk svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ex{position:relative;background:var(--s2);border:1px solid var(--ln);border-radius:14px;padding:12px 58px 12px 14px;font:500 italic 19px/1.35 var(--serif);color:#e6ded2;margin-top:8px}
+.lv{position:absolute;top:12px;right:12px;font:700 13px/1 var(--sans);letter-spacing:.06em;padding:6px 9px;border-radius:8px;background:var(--wine);color:#fff;font-style:normal}
+.lvs{display:flex;flex-wrap:wrap;gap:5px}
+.lvb{min-width:40px;min-height:34px;padding:0 7px;border-radius:9px;font-size:13px!important;border:1px solid var(--ln);background:none;color:var(--mu);font:700 14px var(--sans);letter-spacing:.04em}
+.lvb.has{color:var(--ink);border-color:#4a4440}.lvb.cur{background:var(--wine2);border-color:var(--wine2);color:#fff}
+.lvb.load{animation:pl 1s infinite}@keyframes pl{50%{opacity:.4}}
+.wl{font:700 13px/1 var(--sans);letter-spacing:.06em;padding:7px 10px;border-radius:99px;background:var(--ink);color:#111}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{padding:5px 11px;border-radius:99px;background:rgba(155,35,48,.18);color:#f0b6bc;font-size:14px;font-weight:500}
+.st{font:700 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:7px 10px;border-radius:99px;border:1px solid var(--ln);color:var(--mu)}
+.st.hard{color:var(--rose);border-color:#5a2a2f}.st.mastered{color:var(--ok);border-color:#34402e}
+/* flip card */
+.lhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lhead .bar{flex:1;margin:0}
+.flip{perspective:1800px;cursor:pointer;outline:none}
+.inner{display:grid;transition:transform .6s cubic-bezier(.2,.75,.2,1);transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;min-height:clamp(250px,calc(100dvh - 330px),430px);display:flex;flex-direction:column}
+.back{transform:rotateY(180deg)}
+.flip.on .front,.flip:not(.on) .back{pointer-events:none}
+.front .word{font:800 clamp(52px,11vw,104px)/.95 var(--sans);letter-spacing:-.035em;margin:auto 0 0;overflow-wrap:anywhere}
+.gloss{display:flex;align-items:center;gap:12px;margin:14px 0 auto;font:500 italic 24px var(--serif);color:var(--mu)}
+.gloss::before{content:"";width:56px;height:2px;background:var(--wine2)}
+.back .sec{margin-top:12px}.def{color:var(--mu);margin:4px 0 0;font-size:16px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.done{text-align:center;padding:56px 20px}
+/* games */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
+.tile{text-align:left;background:var(--s1);border:1px solid var(--ln);border-radius:20px;padding:18px 20px;min-height:150px;display:flex;flex-direction:column;gap:8px}
+.tile:hover{border-color:#4a4440}
+.tile b{font:800 26px/1.1 var(--sans)}.tile em{font:600 20px var(--serif);color:var(--mu);margin-top:auto}
+.q{font:800 clamp(21px,3.2vw,30px)/1.2 var(--sans);letter-spacing:-.015em;margin:6px 0 14px}
+.q.serif{font:500 italic clamp(22px,3.4vw,30px)/1.35 var(--serif)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;min-height:52px;padding:8px 14px;border-radius:16px;border:1px solid var(--ln);background:var(--s2);font-size:18px}
+.opt i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--bg);color:var(--rose);font:700 14px var(--sans);font-style:normal}
+.opt.good{border-color:#5d7a51;background:#1b2418}.opt.bad{border-color:#7a2a33;background:#2a1517}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:grid;gap:10px;align-content:start}
+.m{min-height:58px;padding:8px 12px;border-radius:14px;border:1px solid var(--ln);background:var(--s2);font-size:17px;transition:opacity .3s,transform .2s}
+.m.tr2{font:600 20px var(--serif)}
+.m.sel{border-color:var(--rose);background:#2a1517}
+.m.gone{opacity:0;pointer-events:none;transform:scale(.96)}
+.m.err{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* forms + lists */
+form{display:grid;gap:12px}
+label.f{display:grid;gap:8px}
+.in{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--ln);background:#0f0e0e;font-size:16px}
+textarea.in{min-height:74px;resize:vertical}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px}
+.wrow{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:10px;align-items:end}
+.lvsel{padding:12px 10px;font-weight:700;text-align:center;color:#f0b6bc;border-color:#5a2a2f}
+.wsup{display:inline-block;font:700 15px/1 var(--sans);letter-spacing:.04em;padding:5px 7px;border-radius:7px;background:var(--ink);color:#111;vertical-align:top;margin:.12em 0 0 10px}
+.wsup.sm{font-size:11.5px;padding:3px 5px;margin:0 0 0 6px;vertical-align:1px}
+.nav2{font-size:26px;line-height:1;color:var(--ink);background:var(--s1)}.nav2[disabled]{opacity:.3}
+.note{color:var(--dim);font-size:14px;margin:0}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.kp div{background:var(--s1);border:1px solid var(--ln);border-radius:18px;padding:16px}
+.kp b{display:block;font:800 34px/1.1 var(--sans)}.kp span{color:var(--mu);font-size:14px}
+.days{display:grid;gap:8px;margin-top:14px}
+.days div{display:grid;grid-template-columns:44px minmax(0,1fr) 30px;gap:10px;align-items:center;font-size:14px;color:var(--mu)}
+.days u{height:12px;background:var(--s2);border-radius:6px;overflow:hidden;text-decoration:none}
+.days u i{display:block;height:100%;background:var(--wine2)}
+.days em{font-style:normal;text-align:right;color:var(--ink)}
+.list{display:grid;margin-top:12px}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--ln)}
+.li b{font:700 18px var(--sans)}.li small{display:block;color:var(--mu);font:600 17px var(--serif);font-style:italic}
+.ib{width:44px;height:44px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mu)}
+.ib.warn{border-color:var(--wine2);color:#fff;background:var(--wine2);width:auto;padding:0 10px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:#111;padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.fgrid{display:grid;gap:12px}@media(min-width:700px){.fgrid{grid-template-columns:1fr 1fr}.fgrid .span{grid-column:1/-1}}
+@media(max-width:899px){
+.app{grid-template-columns:1fr}
+.rail{position:fixed;inset:auto 0 0 0;height:auto;flex-direction:row;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--ln);background:rgba(10,10,10,.96);backdrop-filter:blur(10px);z-index:20}
+.mono{display:none}.nav{width:auto;flex:1}
+main{padding-bottom:calc(76px + env(safe-area-inset-bottom));padding-top:max(14px,env(safe-area-inset-top))}
+.face{min-height:clamp(240px,calc(100dvh - 380px),420px)}
+.rule:not(.home){display:none}h2{margin-bottom:12px}.brand{font-size:36px}.rule.home{margin:4px 0 12px}
+.wotdc .hm{display:none}.wotdc .acts{grid-template-columns:1fr 1fr}.wotdc .btn{min-height:40px}.week i{max-width:28px}
+.two.keep{grid-template-columns:minmax(0,1fr) 88px}
+@media(max-width:600px){.card{padding:14px 16px}.big{font-size:40px}.cnt button{min-height:46px;padding:6px 10px}.cnt b{font-size:19px}.cnt span{font-size:13px}
+.wotdc .acts,.rule.home{display:none}.brand{margin-bottom:10px}.grid,.grid>div{gap:10px!important}.top{margin-bottom:10px}.cnt{margin-bottom:10px}.bar{margin:10px 0}form{gap:10px}label.f{gap:6px}.wotdc .spk{width:40px;height:40px}.wotd{font-size:28px}.wotdc .tr{font-size:22px}
+.week{margin-top:8px}.week i{max-width:26px}.btn.p.w{min-height:48px}}.tile{min-height:0}.tile em{display:none}.rule{margin:6px 0 12px}.ex{font-size:17px}
+}
+@media(max-width:600px){.two{grid-template-columns:1fr}.ex{font-size:18px}.match .m{font-size:15px}.cnt b{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.inner{transition:none}.bar i,.m,.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Main">
+    <div class="mono" aria-hidden="true"><span><b>H</b><i>s</i></span></div>
+    <button class="nav" data-go="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button class="nav" data-go="learn"><svg viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-9-1.5v14c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5v-14c-4-.5-7 0-9 1.5zM12 6v14"/></svg>Learn</button>
+    <button class="nav" data-go="games"><svg viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.6 7l-.6 1.4a2.5 2.5 0 0 1-4.2.6L15 15H9l-1.8 2a2.5 2.5 0 0 1-4.2-.6L2.4 15A5 5 0 0 1 7 8zM7 10.5v3M5.5 12h3M16 11h.01M18 13h.01"/></svg>Games</button>
+    <button class="nav" data-go="add"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Add</button>
+    <button class="nav" data-go="stats"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 17v-5M12 17V8M16 17v-7"/></svg>Stats</button>
+  </nav>
+  <main>
+    <header class="top">
+      <div class="lock" aria-label="Hermes Society"><b>HERMES</b><span><em>society</em></span></div>
+      <span class="chip" id="streak"><i class="d"></i>0 day streak</span>
+    </header>
+    <div id="view"></div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+{
+const SEED=[
+["vow","yemin, ant","A serious, formal promise.","The new president took a vow to defend the constitution.","B2","make a vow · take a vow"],
+["strict","katı, sıkı","Demanding that rules are obeyed without exceptions.","The empire enforced strict laws on trade with its neighbours.","B1","strict rules · strict control"],
+["embassy","büyükelçilik","The office of one country's ambassador in another country.","Protesters gathered outside the embassy after the talks collapsed.","B1","foreign embassy"],
+["entrenched","kökleşmiş, yerleşik","So firmly established that it is hard to change.","Entrenched interests made land reform almost impossible.","C1","deeply entrenched"],
+["involve","içermek, gerektirmek","To include something as a necessary part.","Rebuilding the economy will involve painful choices.","B1","involve risk · be involved in"],
+["legitimate","meşru","Allowed by law, or fair and reasonable.","Many citizens no longer saw the regime as legitimate.","B2","legitimate concern · legitimate government"],
+["inflation","enflasyon","A general rise in prices over time.","The central bank raised interest rates to fight inflation.","B1","high inflation · curb inflation"],
+["sovereignty","egemenlik","A country's full right to govern itself.","The treaty respected each nation's sovereignty over its own borders.","C1","national sovereignty"],
+["scarcity","kıtlık","A situation where there is not enough of something.","Scarcity forces every society to decide how to use its resources.","C1","scarcity of resources"],
+["dissent","muhalefet, karşı görüş","Strong disagreement with official opinion.","The government silenced dissent by closing independent newspapers.","C1","political dissent"],
+["treaty","antlaşma","A formal written agreement between countries.","The Treaty of Lausanne was signed in 1923.","B2","sign a treaty · peace treaty"],
+["coup","darbe","A sudden, often violent seizure of government power.","The general seized power in a military coup.","B2","military coup · stage a coup"],
+["austerity","kemer sıkma","Strict cuts in government spending.","Years of austerity left public services underfunded.","C1","austerity measures"],
+["virtue","erdem","A good moral quality in a person.","For Aristotle, courage is a virtue between cowardice and recklessness.","B2","moral virtue"],
+["empire","imparatorluk","A group of countries ruled by one powerful state.","The Ottoman Empire lasted for more than six centuries.","B1","rise and fall of an empire"],
+["revenue","gelir","Money that a government or company receives.","Tax revenue fell sharply during the recession.","B2","tax revenue · generate revenue"],
+["doctrine","öğreti, doktrin","A set of beliefs taught by a group.","The Monroe Doctrine warned European powers to stay out of the Americas.","C1","military doctrine"],
+["consent","rıza, onay","Permission or agreement to something.","Locke argued that government rests on the consent of the governed.","B2","give consent · without consent"],
+["deficit","açık","The amount by which spending is more than income.","The country ran a large budget deficit to pay for the war.","B2","budget deficit · trade deficit"],
+["reign","saltanat, hükümdarlık","The period when a king or queen rules.","Suleiman's reign is often seen as the height of Ottoman power.","B2","during the reign of"],
+["ideology","ideoloji","A set of political ideas and beliefs.","The party's ideology shaped every school textbook.","B2","political ideology"],
+["subsidy","sübvansiyon, devlet desteği","Money a government pays to lower a cost.","Farm subsidies keep food prices low but cost taxpayers billions.","C1","government subsidy"],
+["tyranny","zorbalık, tiranlık","Cruel and unfair use of power.","Plato feared that unlimited freedom could end in tyranny.","C1","fight against tyranny"],
+["alliance","ittifak","An agreement between countries to work together.","The two states formed an alliance against their common enemy.","B2","form an alliance"],
+["abolish","kaldırmak, ilga etmek","To officially end a law or system.","The Ottoman sultanate was abolished in 1922.","B2","abolish slavery"],
+["inevitable","kaçınılmaz","Certain to happen; impossible to avoid.","Some historians argue the war was inevitable; others blame poor diplomacy.","B2","almost inevitable"],
+["monopoly","tekel","Complete control of a market by one company or state.","The state held a monopoly on salt and tobacco.","B2","have a monopoly on"],
+["scrutiny","yakından inceleme","Careful and critical examination.","The minister's spending came under public scrutiny.","C1","under scrutiny · public scrutiny"],
+["ethics","etik, ahlak bilimi","Moral principles about right and wrong.","Kant's ethics is built on duty rather than consequences.","B2","business ethics"],
+["recession","durgunluk, resesyon","A period when the economy shrinks.","Unemployment rose quickly once the recession began.","B2","enter a recession · economic recession"],
+["negotiate","müzakere etmek","To discuss something to reach an agreement.","Diplomats spent months negotiating a ceasefire.","B2","negotiate a deal"],
+["uprising","ayaklanma","An act of people fighting against those in power.","The uprising spread from the capital to the provinces within days.","B2","popular uprising"],
+["premise","öncül","An idea that an argument is based on.","If the premise is false, the whole argument collapses.","C1","basic premise"],
+["tariff","gümrük vergisi","A tax on goods coming into a country.","New tariffs on steel raised prices for local builders.","B2","impose a tariff"],
+["accountable","hesap verebilir, sorumlu","Expected to explain your actions and decisions.","Free elections keep leaders accountable to voters.","C1","hold someone accountable"],
+["decline","gerileme, düşüş","A gradual loss of strength or quality.","Historians still debate the causes of Rome's decline.","B2","economic decline · in decline"],
+["notion","kavram, fikir","An idea or belief.","The notion of human rights spread rapidly after 1945.","B2","the notion that"],
+["compromise","uzlaşma","An agreement where each side gives up something.","Neither party won everything, but the compromise kept the peace.","B2","reach a compromise"],
+["regime","rejim","A government, often one that rules strictly.","The regime collapsed after weeks of mass protests.","B2","authoritarian regime"],
+["profound","derin, köklü","Very great or strong in effect.","The printing press had a profound effect on European thought.","C1","profound impact"]];
+const GOAL=10,LV=["A1","A2","B1","B2","C1","C2"],KEY="hercab-v1";
+const $=s=>document.querySelector(s),V=$("#view");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dk=d=>{const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fresh=()=>({v:1,t:0,words:SEED.map((s,i)=>({id:"s"+i,w:s[0],tr:s[1],def:s[2],ex:s[3],lvl:s[4],wl:s[4],exs:{[s[4]]:s[3]},col:s[5],c:0,hard:false,seen:false,due:0})),log:{},best:{}});
+function migrate(st){let n=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^hercab/i.test(k)||k===KEY)continue;let a;try{a=JSON.parse(localStorage.getItem(k))}catch(e){continue}
+  if(a&&!Array.isArray(a))a=a.words||a.items;if(!Array.isArray(a))continue;
+  for(const o of a){if(!o||typeof o!=="object")continue;const w=String(o.word||o.w||"").trim();if(!w)continue;
+    const c=Math.min(3,+(o.correctCount||o.correct||o.recalls||0)||0),st0=String(o.status||"").toLowerCase(),ex=String(o.example||o.ex||""),lv=LV.includes(o.level)?o.level:"B2";
+    const nw={id:"m"+(n++)+Date.now().toString(36),w,tr:String(o.turkish||o.tr||o.translation||""),def:String(o.easyMeaning||o.definition||o.meaning||o.def||""),ex,lvl:lv,wl:lv,exs:ex?{[lv]:ex}:{},col:String(o.collocation||o.collocations||o.col||""),c:st0==="mastered"?3:c,hard:st0==="hard"||(+o.wrongCount>c),seen:st0!=="new"&&st0!=="",due:0};
+    const old=st.words.find(x=>x.w.toLowerCase()===w.toLowerCase());if(old){old.c=Math.max(old.c,nw.c);old.seen=old.seen||nw.seen;old.hard=nw.hard}else st.words.unshift(nw)}}}catch(e){}
+  if(n)st.migrated=n}
+const fix=st=>{st.log=st.log||{};st.best=st.best||{};st.words.forEach(w=>{w.lvl=LV.includes(w.lvl)?w.lvl:"B2";w.wl=w.wl||w.lvl;if(!w.exs||typeof w.exs!=="object")w.exs={};if(w.ex&&!w.exs[w.lvl])w.exs[w.lvl]=w.ex});return st};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!Array.isArray(S.words)){S=fresh();migrate(S)}fix(S);let busyLv=null;
+const SB="https://kezbouztvhaysjurkvjs.supabase.co",ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtlemJvdXp0dmhheXNqdXJrdmpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MTA0OTcsImV4cCI6MjExMTA4NjQ5N30.AayRQuz-ZRuRSZ0i9eQwNcaj0yg36nKax3gcVZynV9k",VAL="https://ayedemirhan--0107470ece3611f1adcd1607ee4eb77e.web.val.run";
+const H={"Content-Type":"application/json",apikey:ANON,Authorization:"Bearer "+ANON};
+const sample=true;let saveT=null,writing=false,pending=false,synced=null;
+const CK="hercab-sync-code";
+function newCode(){const a="abcdefghjkmnpqrstuvwxyz23456789",b=new Uint32Array(12);crypto.getRandomValues(b);return[...b].map(x=>a[x%a.length]).join("").replace(/(.{4})(?=.)/g,"$1-")}
+let code;try{code=localStorage.getItem(CK)}catch(e){}if(!code){code=newCode();try{localStorage.setItem(CK,code)}catch(e){}}
+async function rpc(fn,args){const r=await fetch(SB+"/rest/v1/rpc/"+fn,{method:"POST",headers:H,body:JSON.stringify(args)});if(!r.ok)throw new Error("sync "+r.status);const t=await r.text();return t?JSON.parse(t):null}
+async function api(body){
+  try{const r=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j}catch(e){}
+  try{const r=await fetch(SB+"/functions/v1/hercab-ai",{method:"POST",headers:H,body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j;if(body.mode!=="fill")throw new Error(j.error||"ai "+r.status)}
+  catch(e){if(body.mode!=="fill")throw e}
+  if(body.mode==="trOnly")return{tr:await trFree(body.word)};
+  const r=await fetch(VAL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({word:body.word})});const j=await r.json();
+  if(!r.ok||!j.definition)throw new Error("ai");return{tr:await trFree(body.word),def:j.definition,ex:j.example,col:j.collocation}}
+async function trFree(w){try{const r=await fetch("https://api.mymemory.translated.net/get?langpair=en|tr&q="+encodeURIComponent(w));const j=await r.json();const t=String(j?.responseData?.translatedText||"").trim();
+  return t&&t.toLowerCase()!==String(w).toLowerCase()&&!/MYMEMORY|QUERY LENGTH/i.test(t)?t.toLocaleLowerCase("tr"):""}catch(e){return""}}
+const status=w=>w.c>=3?"mastered":w.hard?"hard":w.seen?"learning":"new";
+const today=()=>S.log[dk(Date.now())]||0;
+function streak(){let n=0,d=new Date();if(!S.log[dk(d)])d.setDate(d.getDate()-1);while(S.log[dk(d)]){n++;d.setDate(d.getDate()-1)}return n}
+function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(push,900)}
+async function push(){if(synced===false)return;if(writing){pending=true;return}writing=true;try{await rpc("hercab_put",{p_code:code,p_data:S});synced=true}catch(e){}writing=false;if(pending){pending=false;push()}}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2200)}
+function speak(t){try{if(window.speechSynthesis){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";const v=speechSynthesis.getVoices().find(v=>v.lang==="en-GB");if(v)u.voice=v;u.rate=.92;speechSynthesis.speak(u);return}}catch(e){}}
+const canSpeak=()=>!!window.speechSynthesis;
+const SPK=`<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>`;
+const spk=w=>canSpeak()?`<button class="spk" data-act="say" data-t="${esc(w)}" aria-label="Pronounce ${esc(w)}">${SPK}</button>`:"";
+const exBox=w=>`<div class="ex">“${esc(w.ex)}”<span class="lv" title="Sentence level">${esc(w.lvl||"B2")}</span></div>`;
+const tags=w=>w.col?`<div class="tags">${String(w.col).split("·").map(c=>c.trim()).filter(Boolean).map(c=>`<span class="tag">${esc(c)}</span>`).join("")}</div>`:"";
+const byId=id=>S.words.find(w=>w.id===id);
+function head(){const n=streak();$("#streak").innerHTML=`<i class="d"></i>${n} day streak`}
+
+/* ---------- HOME ---------- */
+function wotd(){const n=Math.floor(Date.now()/864e5);return S.words[n%S.words.length]}
+function home(){
+  const c={hard:0,learning:0,new:0,mastered:0};S.words.forEach(w=>c[status(w)]++);
+  const t=Math.min(today(),GOAL),pct=Math.round(c.mastered/Math.max(1,S.words.length)*100),w=wotd();
+  const mon=new Date();mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const wk=["M","T","W","T","F","S","S"].map((l,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const k=dk(d);return`<div class="${S.log[k]?"on":""} ${k===dk(Date.now())?"now":""}"><i></i><span>${l}</span></div>`}).join("");
+  V.innerHTML=`<h1 class="brand">Her<em>cab</em></h1><div class="rule home"><span class="lab">Your words · everywhere</span></div>
+  <div class="grid">
+   <section class="card"><div class="row"><p class="lab" style="color:var(--rose)">Today's review</p><span class="note">about ${Math.max(1,Math.ceil((GOAL-t)*0.2))} min</span></div>
+    <div style="margin-top:14px"><span class="big">${t}/${GOAL}</span> <span style="color:var(--mu)">words reviewed</span></div>
+    <div class="bar"><i style="width:${t/GOAL*100}%"></i></div>
+    <div class="cnt"><button class="h" data-act="learn" data-f="hard"><b>${c.hard}</b><span>hard ›</span></button><button data-act="learn" data-f="learning"><b>${c.learning}</b><span>learning ›</span></button><button data-act="learn" data-f="new"><b>${c.new}</b><span>new ›</span></button></div>
+    <button class="btn p w" data-act="learn">${t?"Continue review":"Start review"} →</button></section>
+   <div style="display:grid;gap:14px">
+   <section class="card"><div class="row"><p class="lab">This week</p><span class="note">${streak()} day streak</span></div><div class="week">${wk}</div>
+    <div class="row" style="margin-top:14px"><p class="lab">Mastery</p><span class="note">${c.mastered} of ${S.words.length} words · ${pct}%</span></div><div class="bar" style="margin-bottom:0"><i style="width:${pct}%"></i></div></section>
+   <section class="card wotdc" data-act="learn" data-first="${esc(w.id)}" style="cursor:pointer"><div class="row"><p class="lab">Word of the day</p>${spk(w.w)}</div>
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="wotd">${esc(w.w)}</span><span class="tr">${esc(w.tr)}</span></div><p class="def hm">${esc(w.def)}</p>
+    <div id="wex" hidden>${exBox(w)}</div>
+    <div class="acts hm2"><button class="btn s" data-act="wex">See example</button><button class="btn s" data-act="learn" data-first="${esc(w.id)}">Study now</button></div></section>
+   </div>
+  </div>`}
+
+/* ---------- LEARN ---------- */
+let L=null;
+function startLearn(f,first){
+  const now=Date.now(),rank={hard:0,learning:1,new:2,mastered:3};
+  let pool=S.words.filter(w=>{const s=status(w);return f?s===f:(s!=="mastered"||w.due<=now)});
+  pool.sort((a,b)=>rank[status(a)]-rank[status(b)]||(a.due-b.due));
+  let q=pool.slice(0,GOAL).map(w=>w.id);
+  if(first){q=q.filter(i=>i!==first);q.unshift(first);q=q.slice(0,GOAL)}
+  L={q,i:0,on:false,f};go("learn")}
+function learn(){
+  if(!L)startLearnSilently();
+  if(!L.q.length){V.innerHTML=`<div class="card done"><h2>Nothing due right now</h2><p class="note" style="margin:12px 0 24px">Add new words or play a game to keep going.</p><button class="btn p" data-go="add">Add a word</button></div>`;return}
+  if(L.i>=L.q.length){V.innerHTML=`<div class="card done"><p class="lab">Session complete</p><div class="brand" style="margin:16px 0">${L.q.length}<em> words</em></div><p class="note" style="margin-bottom:24px">Today: ${today()} reviewed · ${streak()} day streak</p><div class="acts" style="max-width:440px;margin:0 auto"><button class="btn" data-go="home">Home</button><button class="btn p" data-act="learn">Another round</button></div></div>`;return}
+  const w=byId(L.q[L.i]);if(!w){L.q.splice(L.i,1);return learn()}
+  const st=status(w);
+  V.innerHTML=`<div class="lhead"><button class="ib nav2" data-act="prev" aria-label="Previous word" ${L.i===0?"disabled":""}>‹</button><span class="note" style="white-space:nowrap">${L.i+1} / ${L.q.length}</span><div class="bar"><i style="width:${L.i/L.q.length*100}%"></i></div>
+   <button class="ib nav2" data-act="next" aria-label="Next word">›</button></div>
+  <div class="flip ${L.on?"on":""}" id="flip" tabindex="0" role="button" aria-label="Flip card"><div class="inner">
+   <section class="card face front"><div class="row"><span class="st ${st}">${st}</span>${spk(w.w)}</div>
+    <h2 class="word">${esc(w.w)}<sup class="wsup" title="Word level">${esc(w.wl)}</sup></h2><div class="gloss">tap to reveal</div><p class="note">Correct recalls: ${Math.min(w.c,3)} / 3</p></section>
+   <section class="card face back"><div class="row"><p class="lab">${esc(w.w)} <span class="wsup sm">${esc(w.wl)}</span></p>${spk(w.w)}</div>
+    <div class="sec" style="margin-top:6px">${w.tr?`<div class="tr">${esc(w.tr)}</div>`:`<button class="btn s" data-act="gettr">✦ Get Türkçe</button>`}${w.def?`<p class="def">${esc(w.def)}</p>`:""}</div>
+    <div class="sec"><div class="row" style="gap:8px"><p class="lab">Example</p><div class="lvs">${LV.slice(1).map(l=>`<button class="lvb ${w.exs[l]?"has":""} ${l===w.lvl?"cur":""} ${busyLv===l?"load":""}" data-act="lvl" data-l="${l}">${l}</button>`).join("")}<button class="lvb" data-act="newex" aria-label="Another example" title="Another example">↻</button></div></div>${exBox(w)}${tags(w)}</div></section>
+  </div></div>
+  <div class="acts"><button class="btn" data-act="again">Review again</button><button class="btn p" data-act="know">Know it</button></div>`}
+function startLearnSilently(){const g=go;go=()=>{};startLearn();go=g}
+function grade(ok){
+  const w=byId(L.q[L.i]);if(!w)return;
+  w.seen=true;
+  if(ok){w.c++;w.hard=false;w.due=Date.now()+[1,1,3,7,21][Math.min(w.c,4)]*864e5}
+  else{w.hard=true;w.c=0;w.due=Date.now();if(L.q.indexOf(w.id,L.i+1)<0&&L.q.length<GOAL+5)L.q.push(w.id)}
+  const k=dk(Date.now());S.log[k]=(S.log[k]||0)+1;
+  if(ok&&w.c===3)toast(`Mastered “${w.w}”`);
+  L.i++;L.on=false;save();head();learn()}
+function step(d){
+  if(d<0){if(L.i>0){L.i--;L.on=false;learn()}return}
+  if(L.i>=L.q.length-1){const used=new Set(L.q),c=S.words.filter(w=>!used.has(w.id)&&status(w)!=="mastered");if(!c.length)return toast("No more words");L.q.push(c[Math.random()*c.length|0].id)}
+  L.i++;L.on=false;learn()}
+function swap(){
+  const used=new Set(L.q),c=S.words.filter(w=>!used.has(w.id)&&status(w)!=="mastered");
+  if(!c.length)return toast("No other words to swap in");
+  const n=c[Math.random()*c.length|0];L.q[L.i]=n.id;L.on=false;learn();toast(`Swapped for “${n.w}”`)}
+
+/* ---------- GAMES ---------- */
+let G=null;
+function games(){
+  if(G&&G.type==="match")return matchView();
+  if(G)return quizView();
+  V.innerHTML=`<h2>Games</h2><div class="rule"><span class="lab">Play with your own words</span></div>
+  <div class="tiles">
+   <button class="tile" data-act="game" data-g="quiz"><span class="lab">10 questions</span><b>Quiz</b><span style="color:var(--mu)">Meaning, Türkçe or English — pick the right one.</span><em>mixed</em></button>
+   <button class="tile" data-act="game" data-g="match"><span class="lab">Against the clock</span><b>Match</b><span style="color:var(--mu)">Pair five English words with their Türkçe.</span><em>${S.best.match?"best "+S.best.match+"s":"new"}</em></button>
+   <button class="tile" data-act="game" data-g="gap"><span class="lab">10 sentences</span><b>Fill the gap</b><span style="color:var(--mu)">Which word completes the example sentence?</span><em>in context</em></button>
+  </div>`}
+function opts(right,field){return shuf([right,...shuf(S.words.filter(x=>x.id!==right.id&&x[field]&&x[field]!==right[field])).slice(0,3)])}
+const stem=w=>w.length>4?w.slice(0,-1):w;
+function gapOf(w){const r=new RegExp("\\b"+stem(w.w).replace(/[^a-z]/gi,"")+"\\w*","i");return r.test(w.ex)?w.ex.replace(r,"_____"):null}
+function newGame(g){
+  if(S.words.length<5)return toast("Add at least 5 words to play");
+  if(g==="match"){const ws=shuf(S.words.filter(w=>w.tr)).slice(0,5);if(ws.length<5)return toast("Need 5 words with Türkçe");G={type:"match",ws,left:shuf(ws),right:shuf(ws),sel:null,done:new Set(),t0:Date.now(),miss:0};return games()}
+  let pool=shuf(S.words);if(g==="gap")pool=pool.filter(gapOf);
+  const qs=pool.slice(0,10).map((w,i)=>{let m=g==="gap"?"gap":["def","en","tr"][i%3];if(!w.tr&&m!=="gap")m="def";if(!w.def&&m==="def")m=w.tr?"en":"gap";
+    return m==="en"?{w,m,p:w.w,o:opts(w,"tr"),f:"tr",lab:"What is the Türkçe for"}:m==="tr"?{w,m,p:w.tr,o:opts(w,"w"),f:"w",lab:"Which English word means"}:m==="gap"?{w,m,p:gapOf(w),o:opts(w,"w"),f:"w",lab:"Fill the gap"}:{w,m,p:w.def,o:opts(w,"w"),f:"w",lab:"Which word means"}});
+  G={type:g,qs,i:0,score:0,pick:null};games()}
+function quizView(){
+  if(G.i>=G.qs.length){V.innerHTML=`<div class="card done"><p class="lab">${G.type==="gap"?"Fill the gap":"Quiz"} finished</p><div class="brand" style="margin:16px 0">${G.score}<em>/${G.qs.length}</em></div><div class="acts" style="max-width:440px;margin:0 auto"><button class="btn" data-act="gexit">All games</button><button class="btn p" data-act="game" data-g="${G.type}">Play again</button></div></div>`;return}
+  const q=G.qs[G.i],ans=q.w[q.f];
+  V.innerHTML=`<div class="lhead"><button class="ib" data-act="gexit" aria-label="Back">‹</button><div class="bar"><i style="width:${G.i/G.qs.length*100}%"></i></div><span class="note">${G.i+1} / ${G.qs.length}</span></div>
+  <section class="card"><p class="lab">${q.lab}</p><p class="q ${q.m==="gap"||q.m==="tr"?"serif":""}">${q.m==="gap"?"“"+esc(q.p)+"”":esc(q.p)}${q.m==="en"?"?":""}</p>
+  <div class="opts">${q.o.map((o,i)=>{const v=o[q.f];let c="";if(G.pick!=null){if(v===ans)c="good";else if(i===G.pick)c="bad"}return`<button class="opt ${c}" data-act="pick" data-i="${i}" ${G.pick!=null?"disabled":""}><i>${i+1}</i>${esc(v)}</button>`}).join("")}</div>
+  ${G.pick!=null?`<div style="margin-top:18px">${q.m==="gap"?exBox(q.w):`<p class="note" style="font-size:15px">${esc(q.w.w)} — ${esc(q.w.tr)}</p>`}<button class="btn p w" style="margin-top:14px" data-act="gnext">Next →</button></div>`:""}</section>`}
+function pick(i){const q=G.qs[G.i];if(G.pick!=null)return;G.pick=i;if(q.o[i][q.f]===q.w[q.f])G.score++;else{q.w.hard=true;q.w.seen=true;save()}quizView()}
+function matchView(){
+  const g=G,fin=g.done.size===g.ws.length;
+  if(fin){const s=Math.round((Date.now()-g.t0)/1000);if(!g.final){g.final=s;if(!S.best.match||s<S.best.match){S.best.match=s;save()}}
+    V.innerHTML=`<div class="card done"><p class="lab">Match complete</p><div class="brand" style="margin:16px 0">${g.final}<em>s</em></div><p class="note" style="margin-bottom:24px">${g.miss} miss${g.miss===1?"":"es"} · best ${S.best.match}s</p><div class="acts" style="max-width:440px;margin:0 auto"><button class="btn" data-act="gexit">All games</button><button class="btn p" data-act="game" data-g="match">Play again</button></div></div>`;return}
+  const cell=(w,side)=>`<button class="m ${side==="r"?"tr2":""} ${g.done.has(w.id)?"gone":""} ${g.sel&&g.sel.id===w.id&&g.sel.side===side?"sel":""}" data-act="m" data-id="${esc(w.id)}" data-side="${side}">${esc(side==="l"?w.w:w.tr)}</button>`;
+  V.innerHTML=`<div class="lhead"><button class="ib" data-act="gexit" aria-label="Back">‹</button><div class="bar"><i style="width:${g.done.size/g.ws.length*100}%"></i></div><span class="note">${g.done.size} / ${g.ws.length}</span></div>
+  <section class="card"><p class="lab">Match English with Türkçe</p><div class="match" style="margin-top:16px"><div class="col">${g.left.map(w=>cell(w,"l")).join("")}</div><div class="col">${g.right.map(w=>cell(w,"r")).join("")}</div></div></section>`}
+function m(id,side,el){
+  const g=G;if(!g.sel||g.sel.side===side){g.sel={id,side};return matchView()}
+  if(g.sel.id===id){g.done.add(id);g.sel=null;return matchView()}
+  g.miss++;g.sel=null;el.classList.add("err");setTimeout(matchView,300)}
+
+/* ---------- ADD / EDIT ---------- */
+let A={id:null};
+function add(){
+  const w=A.id?byId(A.id):null,f=w||{};
+  V.innerHTML=`<h2>${w?"Edit word":"New word"}</h2><div class="rule"><span class="lab">Keep it simple · Hercab fills the rest</span></div>
+  <section class="card"><form id="fm" autocomplete="off">
+   <div class="wrow"><label class="f"><span class="lab">Word</span><input class="in" id="fw" required placeholder="e.g. legitimate" value="${esc(f.w||"")}"></label>
+   <label class="f"><span class="lab">Level</span><select class="in lvsel" id="fwl" aria-label="Word level">${LV.map(l=>`<option ${l===(f.wl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
+   ${sample?`<button type="button" class="btn w" data-act="ai" id="aib" style="border-color:var(--wine2);color:#f0b6bc">✦ Fill with AI</button>`:`<p class="note">AI fill isn't available in this view — type the details yourself.</p>`}
+   <div class="fgrid"><label class="f"><span class="lab">Türkçe</span><input class="in" id="ftr" required placeholder="e.g. meşru" value="${esc(f.tr||"")}"></label>
+   <label class="f"><span class="lab">Meaning · easy English</span><input class="in" id="fdef" placeholder="One short, simple sentence" value="${esc(f.def||"")}"></label>
+   <div class="two keep span"><label class="f"><span class="lab">Example sentence</span><textarea class="in" id="fex" placeholder="Example sentence">${esc(f.ex||"")}</textarea></label>
+   <label class="f"><span class="lab">Level</span><select class="in lvsel" id="flv">${LV.map(l=>`<option ${l===(f.lvl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
+   <label class="f span"><span class="lab">Collocation</span><input class="in" id="fcol" placeholder="e.g. legitimate concern" value="${esc(f.col||"")}"></label></div>
+   <div class="acts" style="margin-top:4px">${w?`<button type="button" class="btn" data-act="cancel">Cancel</button>`:`<button type="reset" class="btn">Clear</button>`}<button class="btn p">${w?"Save changes":"Add to Hercab"}</button></div>
+  </form></section>`}
+async function aiFill(){
+  const word=$("#fw").value.trim();if(!word)return toast("Type a word first");
+  const b=$("#aib");b.disabled=true;b.textContent="Filling…";
+  try{const r=await api({mode:"fill",word});
+    if(r&&typeof r==="object"){if(r.tr)$("#ftr").value=r.tr;if(r.def)$("#fdef").value=r.def;if(r.ex)$("#fex").value=r.ex;if(LV.includes(r.lvl))$("#flv").value=r.lvl;if(LV.includes(r.wl))$("#fwl").value=r.wl;if(r.col)$("#fcol").value=r.col;if(!r.tr)toast("Türkçe couldn't be filled — type it")}}
+  catch(e){toast("Couldn't fill — check your connection")}
+  if(document.body.contains(b)){b.disabled=false;b.textContent="✦ Fill with AI"}}
+function submit(e){
+  e.preventDefault();const g=id=>$("#"+id).value.trim(),w=g("fw");
+  if(!w||!g("ftr"))return toast("Word and Türkçe are needed");
+  const data={w,tr:g("ftr"),def:g("fdef"),ex:g("fex"),lvl:g("flv"),wl:g("fwl"),col:g("fcol")};
+  if(A.id){const o=byId(A.id);o.exs=o.exs||{};if(data.ex)o.exs[data.lvl]=data.ex;Object.assign(o,data);A.id=null;save();toast("Saved");return go("stats")}
+  if(S.words.some(x=>x.w.toLowerCase()===w.toLowerCase()))return toast(`“${w}” is already in Hercab`);
+  S.words.unshift({id:"u"+Date.now().toString(36),...data,exs:data.ex?{[data.lvl]:data.ex}:{},c:0,hard:false,seen:false,due:0});save();toast(`Added “${w}”`);add()}
+const LVD={A2:"very simple, short, everyday words",B1:"simple and clear, common vocabulary",B2:"natural, moderately complex",C1:"advanced, with a subordinate clause and academic vocabulary",C2:"sophisticated, nuanced, like a quality newspaper or essay"};
+async function genEx(w,l,avoid){
+  const r=await api({mode:"example",word:w.w,def:w.def,level:l,avoid:avoid||""});
+  if(!r||!r.ex)throw{code:"empty"};return String(r.ex)}
+async function setLvl(l){
+  const w=byId(L.q[L.i]);if(!w||busyLv)return;
+  if(w.exs[l]){w.lvl=l;w.ex=w.exs[l];save();return learn()}
+  if(!sample)return toast("AI isn't available here");
+  busyLv=l;learn();
+  try{const ex=await genEx(w,l);w.exs[l]=ex;w.lvl=l;w.ex=ex;save()}catch(e){toast("Couldn't write a "+l+" sentence")}
+  busyLv=null;if(location.hash==="#learn"&&byId(L.q[L.i])===w)learn()}
+async function newEx(){
+  const w=byId(L.q[L.i]);if(!w||!sample||busyLv)return;const l=w.lvl;busyLv=l;learn();
+  try{const ex=await genEx(w,l,w.ex);w.exs[l]=ex;w.ex=ex;save()}catch(e){toast("Couldn't get a new example")}
+  busyLv=null;if(location.hash==="#learn")learn()}
+
+async function getTr(){const w=byId(L.q[L.i]);if(!w)return;toast("Getting Türkçe…");
+  try{const r=await api({mode:"fill",word:w.w});if(r.tr){w.tr=r.tr;if(!w.def&&r.def)w.def=r.def;if(LV.includes(r.wl))w.wl=r.wl;save();L.on=true;learn()}else toast("Couldn't get Türkçe")}catch(e){toast("Couldn't get Türkçe")}}
+/* ---------- STATS ---------- */
+let Q="",del=null;
+function stats(){
+  const c={hard:0,learning:0,new:0,mastered:0};S.words.forEach(w=>c[status(w)]++);
+  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return{l:d.toLocaleDateString("en-GB",{weekday:"short"}),n:S.log[dk(d)]||0}}),mx=Math.max(GOAL,...days.map(d=>d.n));
+  V.innerHTML=`<h2>Stats</h2><div class="rule"><span class="lab">${S.words.length} words · ${streak()} day streak</span></div>
+  <div class="kp"><div><b>${c.mastered}</b><span>mastered</span></div><div><b>${c.learning}</b><span>learning</span></div><div><b style="color:var(--rose)">${c.hard}</b><span>hard</span></div><div><b>${c.new}</b><span>new</span></div></div>
+  <div class="grid" style="margin-top:18px">
+   <section class="card"><div class="row"><p class="lab">Sync</p><span class="note">${synced?"saved to cloud":synced===false?"offline":"connecting…"}</span></div>
+    <p style="margin:12px 0 6px;color:var(--mu)">Your sync code. Enter it on your other device to share words and progress.</p>
+    <div class="row"><b style="font:800 24px var(--sans);letter-spacing:.04em">${esc(code)}</b><button class="btn s" data-act="copycode">Copy</button></div>
+    <div class="two" style="margin-top:14px;grid-template-columns:minmax(0,1fr) auto"><input class="in" id="codein" placeholder="Code from another device" autocomplete="off"><button class="btn" data-act="usecode">Use</button></div></section>
+   <section class="card"><p class="lab">Last 7 days</p><div class="days">${days.map(d=>`<div><span>${d.l}</span><u><i style="width:${d.n/mx*100}%"></i></u><em>${d.n}</em></div>`).join("")}</div></section>
+   <section class="card"><div class="row"><p class="lab">My words</p><span class="note">tap ✎ to edit</span></div>
+    <input class="in" id="q" placeholder="Search English or Türkçe" value="${esc(Q)}" style="margin-top:12px"><div class="list" id="list"></div>
+    <button class="btn s" data-act="reset" style="margin-top:16px">${del==="reset"?"Tap again to reset all progress":"Reset progress"}</button></section>
+  </div>`;list()}
+function list(){
+  const q=Q.toLowerCase(),ws=S.words.filter(w=>!q||w.w.toLowerCase().includes(q)||String(w.tr).toLowerCase().includes(q));
+  $("#list").innerHTML=ws.length?ws.slice(0,200).map(w=>`<div class="li"><div><b>${esc(w.w)}</b> <span class="wl" style="margin-left:6px">${esc(w.wl)}</span> <span class="st ${status(w)}" style="margin-left:6px">${status(w)}</span><small>${esc(w.tr)}</small></div>
+   <button class="ib" data-act="edit" data-id="${esc(w.id)}" aria-label="Edit ${esc(w.w)}">✎</button>
+   <button class="ib ${del===w.id?"warn":""}" data-act="del" data-id="${esc(w.id)}" aria-label="Delete ${esc(w.w)}">${del===w.id?"Delete?":"✕"}</button></div>`).join(""):`<p class="note" style="padding:16px 0">No words match “${esc(Q)}”.</p>`}
+
+async function copyCode(){try{await navigator.clipboard.writeText(code);toast("Code copied")}catch(e){toast(code)}}
+async function useCode(){const c=($("#codein").value||"").trim().toLowerCase();if(c.length<10)return toast("That code looks too short");
+  try{const r=await rpc("hercab_get",{p_code:c});if(!r||!Array.isArray(r.words))return toast("No data for that code");
+    code=c;try{localStorage.setItem(CK,c)}catch(e){}S=fix(r);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}synced=true;L=null;G=null;toast("Synced — "+S.words.length+" words");stats()}
+  catch(e){toast("Couldn't reach sync")}}
+/* ---------- ROUTER + EVENTS ---------- */
+const VIEWS={home,learn,games,add,stats};
+let go=v=>{if(location.hash.slice(1)!==v)location.hash=v;else render()};
+function render(){const v=VIEWS[location.hash.slice(1)]?location.hash.slice(1):"home";document.querySelectorAll(".nav").forEach(b=>b.toggleAttribute("aria-current",b.dataset.go===v));head();VIEWS[v]();window.scrollTo(0,0)}
+addEventListener("hashchange",render);
+document.addEventListener("click",e=>{
+  const n=e.target.closest("[data-go]");if(n){if(n.dataset.go==="learn")L=null;if(n.dataset.go==="games")G=null;if(n.dataset.go==="add")A.id=null;return go(n.dataset.go)}
+  const a=e.target.closest("[data-act]");
+  if(!a){const f=e.target.closest("#flip");if(f){L.on=!L.on;f.classList.toggle("on",L.on)}return}
+  const d=a.dataset;e.stopPropagation();
+  switch(d.act){
+   case"say":speak(d.t);break;
+   case"learn":startLearn(d.f,d.first);break;
+   case"wex":$("#wex").hidden=!$("#wex").hidden;a.textContent=$("#wex").hidden?"See example":"Hide example";break;
+   case"know":grade(true);break;case"again":grade(false);break;case"swap":swap();break;case"prev":step(-1);break;case"next":step(1);break;case"newex":newEx();break;case"lvl":setLvl(d.l);break;case"gettr":getTr();break;case"copycode":copyCode();break;case"usecode":useCode();break;
+   case"game":newGame(d.g);break;case"gexit":G=null;games();break;case"pick":pick(+d.i);break;case"gnext":G.i++;G.pick=null;quizView();break;
+   case"m":m(d.id,d.side,a);break;
+   case"ai":aiFill();break;case"cancel":A.id=null;go("stats");break;
+   case"edit":A.id=d.id;go("add");if(location.hash==="#add")add();break;
+   case"del":if(del===d.id){const w=byId(d.id);S.words=S.words.filter(x=>x.id!==d.id);del=null;save();toast(`Deleted “${w.w}”`);stats()}else{del=d.id;list()}break;
+   case"reset":if(del==="reset"){S.words.forEach(w=>{w.c=0;w.hard=false;w.seen=false;w.due=0});S.log={};S.best={};del=null;save();toast("Progress reset");stats()}else{del="reset";stats()}break;
+  }});
+document.addEventListener("submit",e=>{if(e.target.id==="fm")submit(e)});
+document.addEventListener("input",e=>{if(e.target.id==="q"){Q=e.target.value;del=null;list()}});
+document.addEventListener("keydown",e=>{
+  if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+  if(location.hash==="#learn"&&L&&L.i<L.q.length){if(e.key===" "||e.key==="Enter"){e.preventDefault();L.on=!L.on;$("#flip").classList.toggle("on",L.on)}if(e.key==="1")grade(false);if(e.key==="2")grade(true);if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)}
+  if(location.hash==="#games"&&G&&G.qs&&/^[1-4]$/.test(e.key)&&G.pick==null)pick(+e.key-1)});
+render();
+if(S.migrated){const n=S.migrated;setTimeout(()=>toast("Brought over "+n+" words from the old Hercab"),600);delete S.migrated;save()}
+
+/* ---------- SYNC + MIGRATION ---------- */
+(async()=>{
+  try{const r=await rpc("hercab_get",{p_code:code});
+    if(r&&Array.isArray(r.words)&&(r.t||0)>(S.t||0)){S=fix(r);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}synced=true;L=null;G=null;render();return}
+    synced=true;push()}
+  catch(e){synced=false;setTimeout(()=>{synced=null;push()},30000)}
+})();
+}
+</script>
+</body>
+</html>
