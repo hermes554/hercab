@@ -7,3 +7,11 @@ Vocabulary app: flip cards with Türkçe, level-tagged example sentences (A2–C
 - `legacy-expo/` — the previous Expo version, kept for reference.
 
 On first load the app imports any words the old Hercab left in this browser's storage.
+
+## Word levels
+
+`web/levels.json` is built from the [Open Language Profiles](https://github.com/openlanguageprofiles/olp-en-cefrj) data:
+- CEFR-J Vocabulary Profile ver. 1.5 — © Tono Laboratory, Tokyo University of Foreign Studies (free for research and commercial use with citation).
+- Octanove Vocabulary Profile C1/C2 ver. 1.0 — Octanove Labs, licensed CC BY-SA 4.0. The derived `levels.json` is shared under the same license.
+
+Words not found in either list are treated as C2.
