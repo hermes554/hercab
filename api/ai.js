@@ -12,7 +12,8 @@ const LVD = {
 const clean = (s, n = 80) => String(s ?? "").replace(/[\r\n"]/g, " ").trim().slice(0, n);
 
 module.exports = async (req, res) => {
-  if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
+  if (req.method === "GET" && req.query && req.query.word) req.body = { word: req.query.word, mode: req.query.mode, level: req.query.level };
+  else if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   const token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || req.headers["x-vercel-oidc-token"];
   if (!token) return res.status(503).json({ error: "no_gateway_auth" });
   let body = req.body;

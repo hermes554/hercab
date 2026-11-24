@@ -126,6 +126,11 @@ label.f{display:grid;gap:8px}
 .in{width:100%;min-height:52px;padding:12px 16px;border-radius:14px;border:1px solid var(--ln);background:#0f0e0e;font-size:16px}
 textarea.in{min-height:96px;resize:vertical}
 .two{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px}
+.wrow{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:10px;align-items:end}
+.lvsel{padding:12px 10px;font-weight:700;text-align:center;color:#f0b6bc;border-color:#5a2a2f}
+.wsup{display:inline-block;font:700 15px/1 var(--sans);letter-spacing:.04em;padding:5px 7px;border-radius:7px;background:var(--ink);color:#111;vertical-align:top;margin:.12em 0 0 10px}
+.wsup.sm{font-size:11.5px;padding:3px 5px;margin:0 0 0 6px;vertical-align:1px}
+.nav2{font-size:26px;line-height:1;color:var(--ink);background:var(--s1)}.nav2[disabled]{opacity:.3}
 .note{color:var(--dim);font-size:14px;margin:0}
 .kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
 .kp div{background:var(--s1);border:1px solid var(--ln);border-radius:18px;padding:16px}
@@ -299,12 +304,12 @@ function learn(){
   if(L.i>=L.q.length){V.innerHTML=`<div class="card done"><p class="lab">Session complete</p><div class="brand" style="margin:16px 0">${L.q.length}<em> words</em></div><p class="note" style="margin-bottom:24px">Today: ${today()} reviewed · ${streak()} day streak</p><div class="acts" style="max-width:440px;margin:0 auto"><button class="btn" data-go="home">Home</button><button class="btn p" data-act="learn">Another round</button></div></div>`;return}
   const w=byId(L.q[L.i]);if(!w){L.q.splice(L.i,1);return learn()}
   const st=status(w);
-  V.innerHTML=`<div class="lhead"><span class="note" style="white-space:nowrap">${L.i+1} / ${L.q.length}</span><div class="bar"><i style="width:${L.i/L.q.length*100}%"></i></div>
-   <button class="btn s" data-act="swap" title="Swap for another word">↻ Change word</button></div>
+  V.innerHTML=`<div class="lhead"><button class="ib nav2" data-act="prev" aria-label="Previous word" ${L.i===0?"disabled":""}>‹</button><span class="note" style="white-space:nowrap">${L.i+1} / ${L.q.length}</span><div class="bar"><i style="width:${L.i/L.q.length*100}%"></i></div>
+   <button class="ib nav2" data-act="next" aria-label="Next word">›</button></div>
   <div class="flip ${L.on?"on":""}" id="flip" tabindex="0" role="button" aria-label="Flip card"><div class="inner">
-   <section class="card face front"><div class="row"><span style="display:flex;gap:8px;align-items:center"><span class="wl" title="Word level">${esc(w.wl)}</span><span class="st ${st}">${st}</span></span>${spk(w.w)}</div>
-    <h2 class="word">${esc(w.w)}</h2><div class="gloss">tap to reveal</div><p class="note">Correct recalls: ${Math.min(w.c,3)} / 3</p></section>
-   <section class="card face back"><div class="row"><p class="lab">${esc(w.w)}</p>${spk(w.w)}</div>
+   <section class="card face front"><div class="row"><span class="st ${st}">${st}</span>${spk(w.w)}</div>
+    <h2 class="word">${esc(w.w)}<sup class="wsup" title="Word level">${esc(w.wl)}</sup></h2><div class="gloss">tap to reveal</div><p class="note">Correct recalls: ${Math.min(w.c,3)} / 3</p></section>
+   <section class="card face back"><div class="row"><p class="lab">${esc(w.w)} <span class="wsup sm">${esc(w.wl)}</span></p>${spk(w.w)}</div>
     <div class="sec"><p class="lab">Türkçe</p>${w.tr?`<div class="tr" style="margin-top:6px">${esc(w.tr)}</div>`:`<button class="btn s" data-act="gettr" style="margin-top:8px">✦ Get Türkçe</button>`}</div>
     <div class="sec"><p class="lab">Meaning</p><p style="margin:6px 0 0;font-size:18px">${esc(w.def)}</p></div>
     <div class="sec"><div class="row"><p class="lab">Example · choose a level</p>${sample?`<button class="btn s" data-act="newex" style="min-height:36px">↻ Another</button>`:""}</div>
@@ -321,6 +326,10 @@ function grade(ok){
   const k=dk(Date.now());S.log[k]=(S.log[k]||0)+1;
   if(ok&&w.c===3)toast(`Mastered “${w.w}”`);
   L.i++;L.on=false;save();head();learn()}
+function step(d){
+  if(d<0){if(L.i>0){L.i--;L.on=false;learn()}return}
+  if(L.i>=L.q.length-1){const used=new Set(L.q),c=S.words.filter(w=>!used.has(w.id)&&status(w)!=="mastered");if(!c.length)return toast("No more words");L.q.push(c[Math.random()*c.length|0].id)}
+  L.i++;L.on=false;learn()}
 function swap(){
   const used=new Set(L.q),c=S.words.filter(w=>!used.has(w.id)&&status(w)!=="mastered");
   if(!c.length)return toast("No other words to swap in");
@@ -373,11 +382,11 @@ function add(){
   const w=A.id?byId(A.id):null,f=w||{};
   V.innerHTML=`<h2>${w?"Edit word":"New word"}</h2><div class="rule"><span class="lab">Keep it simple · Hercab fills the rest</span></div>
   <section class="card"><form id="fm" autocomplete="off">
-   <label class="f"><span class="lab">Word</span><input class="in" id="fw" required placeholder="e.g. legitimate" value="${esc(f.w||"")}"></label>
+   <div class="wrow"><label class="f"><span class="lab">Word</span><input class="in" id="fw" required placeholder="e.g. legitimate" value="${esc(f.w||"")}"></label>
+   <label class="f"><span class="lab">Level</span><select class="in lvsel" id="fwl" aria-label="Word level">${LV.map(l=>`<option ${l===(f.wl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
    ${sample?`<button type="button" class="btn w" data-act="ai" id="aib" style="border-color:var(--wine2);color:#f0b6bc">✦ Fill with AI</button>`:`<p class="note">AI fill isn't available in this view — type the details yourself.</p>`}
    <label class="f"><span class="lab">Türkçe</span><input class="in" id="ftr" required placeholder="e.g. meşru" value="${esc(f.tr||"")}"></label>
    <label class="f"><span class="lab">Meaning · easy English</span><input class="in" id="fdef" placeholder="One short, simple sentence" value="${esc(f.def||"")}"></label>
-   <label class="f"><span class="lab">Word level</span><select class="in" id="fwl">${LV.map(l=>`<option ${l===(f.wl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label>
    <div class="two"><label class="f"><span class="lab">Example sentence</span><textarea class="in" id="fex" placeholder="Example sentence">${esc(f.ex||"")}</textarea></label>
    <label class="f"><span class="lab">Sentence level</span><select class="in" id="flv">${LV.map(l=>`<option ${l===(f.lvl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
    <label class="f"><span class="lab">Collocation</span><input class="in" id="fcol" placeholder="e.g. legitimate concern" value="${esc(f.col||"")}"></label>
@@ -457,7 +466,7 @@ document.addEventListener("click",e=>{
    case"say":speak(d.t);break;
    case"learn":startLearn(d.f,d.first);break;
    case"wex":$("#wex").hidden=!$("#wex").hidden;a.textContent=$("#wex").hidden?"See example":"Hide example";break;
-   case"know":grade(true);break;case"again":grade(false);break;case"swap":swap();break;case"newex":newEx();break;case"lvl":setLvl(d.l);break;case"gettr":getTr();break;case"copycode":copyCode();break;case"usecode":useCode();break;
+   case"know":grade(true);break;case"again":grade(false);break;case"swap":swap();break;case"prev":step(-1);break;case"next":step(1);break;case"newex":newEx();break;case"lvl":setLvl(d.l);break;case"gettr":getTr();break;case"copycode":copyCode();break;case"usecode":useCode();break;
    case"game":newGame(d.g);break;case"gexit":G=null;games();break;case"pick":pick(+d.i);break;case"gnext":G.i++;G.pick=null;quizView();break;
    case"m":m(d.id,d.side,a);break;
    case"ai":aiFill();break;case"cancel":A.id=null;go("stats");break;
@@ -469,7 +478,7 @@ document.addEventListener("submit",e=>{if(e.target.id==="fm")submit(e)});
 document.addEventListener("input",e=>{if(e.target.id==="q"){Q=e.target.value;del=null;list()}});
 document.addEventListener("keydown",e=>{
   if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-  if(location.hash==="#learn"&&L&&L.i<L.q.length){if(e.key===" "||e.key==="Enter"){e.preventDefault();L.on=!L.on;$("#flip").classList.toggle("on",L.on)}if(e.key==="1")grade(false);if(e.key==="2")grade(true)}
+  if(location.hash==="#learn"&&L&&L.i<L.q.length){if(e.key===" "||e.key==="Enter"){e.preventDefault();L.on=!L.on;$("#flip").classList.toggle("on",L.on)}if(e.key==="1")grade(false);if(e.key==="2")grade(true);if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)}
   if(location.hash==="#games"&&G&&G.qs&&/^[1-4]$/.test(e.key)&&G.pick==null)pick(+e.key-1)});
 render();
 if(S.migrated){const n=S.migrated;setTimeout(()=>toast("Brought over "+n+" words from the old Hercab"),600);delete S.migrated;save()}
