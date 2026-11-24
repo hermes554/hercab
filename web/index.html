@@ -241,6 +241,7 @@ function newCode(){const a="abcdefghjkmnpqrstuvwxyz23456789",b=new Uint32Array(1
 let code;try{code=localStorage.getItem(CK)}catch(e){}if(!code){code=newCode();try{localStorage.setItem(CK,code)}catch(e){}}
 async function rpc(fn,args){const r=await fetch(SB+"/rest/v1/rpc/"+fn,{method:"POST",headers:H,body:JSON.stringify(args)});if(!r.ok)throw new Error("sync "+r.status);const t=await r.text();return t?JSON.parse(t):null}
 async function api(body){
+  try{const r=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j}catch(e){}
   try{const r=await fetch(SB+"/functions/v1/hercab-ai",{method:"POST",headers:H,body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j;if(body.mode!=="fill")throw new Error(j.error||"ai "+r.status)}
   catch(e){if(body.mode!=="fill")throw e}
   const r=await fetch(VAL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({word:body.word})});const j=await r.json();
