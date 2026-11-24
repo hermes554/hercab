@@ -379,7 +379,7 @@ function quizView(){
   if(G.i>=G.qs.length){V.innerHTML=`<div class="card done"><p class="lab">${G.type==="gap"?"Fill the gap":"Quiz"} finished</p><div class="brand" style="margin:16px 0">${G.score}<em>/${G.qs.length}</em></div><div class="acts" style="max-width:440px;margin:0 auto"><button class="btn" data-act="gexit">All games</button><button class="btn p" data-act="game" data-g="${G.type}">Play again</button></div></div>`;return}
   const q=G.qs[G.i],ans=q.w[q.f];
   V.innerHTML=`<div class="lhead"><button class="ib" data-act="gexit" aria-label="Back">‹</button><div class="bar"><i style="width:${G.i/G.qs.length*100}%"></i></div><span class="note">${G.i+1} / ${G.qs.length}</span></div>
-  <section class="card"><p class="lab">${q.lab}</p><p class="q ${q.m==="gap"||q.m==="tr"?"serif":""}">${q.m==="gap"?"“"+esc(q.p)+"”":esc(q.p)}${q.m==="en"?"?":""}</p>
+  <section class="card"><p class="lab">${q.lab}</p><p class="q">${esc(q.p)}</p>
   <div class="opts">${q.o.map((o,i)=>{const v=o[q.f];let c="";if(G.pick!=null){if(v===ans)c="good";else if(i===G.pick)c="bad"}return`<button class="opt ${c}" data-act="pick" data-i="${i}" ${G.pick!=null?"disabled":""}><i>${i+1}</i>${esc(v)}</button>`}).join("")}</div>
   ${G.pick!=null?`<div style="margin-top:18px">${q.m==="gap"?exBox(q.w):`<p class="note" style="font-size:15px">${esc(q.w.w)} — ${esc(q.w.tr)}</p>`}<button class="btn p w" style="margin-top:14px" data-act="gnext">Next →</button></div>`:""}</section>`}
 function pick(i){const q=G.qs[G.i];if(G.pick!=null)return;G.pick=i;if(q.o[i][q.f]===q.w[q.f])G.score++;else{q.w.hard=true;q.w.seen=true;save()}quizView()}
