@@ -37,8 +37,8 @@ button{cursor:pointer}
 .nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .nav[aria-current]{color:var(--ink)}.nav[aria-current] svg{stroke:var(--rose)}
 .nav:hover{color:var(--ink)}
-main{padding:clamp(20px,4vw,48px) max(4vw,16px) 64px;max-width:1120px;width:100%;margin:0 auto}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:clamp(22px,4vw,40px)}
+main{padding:clamp(14px,2.4vw,28px) max(3.5vw,16px) 28px;max-width:1120px;width:100%;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:clamp(12px,2vw,22px)}
 .lock{display:inline-grid;line-height:1}
 .lock b{font:800 22px/1 var(--sans);letter-spacing:-.01em}
 .lock span{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:-1px}
@@ -46,70 +46,70 @@ main{padding:clamp(20px,4vw,48px) max(4vw,16px) 64px;max-width:1120px;width:100%
 .lock em{font:500 17px/1 var(--serif)}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;background:var(--s1);border:1px solid var(--ln);font-weight:600;font-size:14px;white-space:nowrap}
 .chip .d{width:8px;height:8px;border-radius:50%;background:var(--wine2)}
-.brand{margin:0;font:800 clamp(44px,8vw,76px)/1 var(--sans);letter-spacing:-.03em}
+.brand{margin:0;font:800 clamp(34px,5vw,54px)/1 var(--sans);letter-spacing:-.03em}
 .brand em{font:600 1.04em/1 var(--serif);letter-spacing:0;margin-left:.02em}
-.rule{display:flex;align-items:center;gap:14px;margin:12px 0 30px;color:var(--mu)}
+.rule{display:flex;align-items:center;gap:14px;margin:8px 0 16px;color:var(--mu)}
 .rule::before{content:"";width:64px;height:2px;background:var(--wine2)}
 .lab{font:700 12.5px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin:0}
-h2{font:800 30px/1.1 var(--sans);letter-spacing:-.02em;margin:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px;align-items:start}
-.card{background:var(--s1);border:1px solid var(--ln);border-radius:22px;padding:clamp(20px,3vw,28px)}
+h2{font:800 26px/1.1 var(--sans);letter-spacing:-.02em;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.card{background:var(--s1);border:1px solid var(--ln);border-radius:20px;padding:clamp(16px,2.2vw,24px)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.big{font:800 clamp(56px,9vw,84px)/1 var(--sans);letter-spacing:-.04em}
-.bar{height:6px;border-radius:9px;background:var(--s2);overflow:hidden;margin:18px 0}
+.big{font:800 clamp(44px,6vw,64px)/1 var(--sans);letter-spacing:-.04em}
+.bar{height:6px;border-radius:9px;background:var(--s2);overflow:hidden;margin:12px 0}
 .bar i{display:block;height:100%;background:var(--wine2);border-radius:9px;transition:width .4s}
 .btn{min-height:52px;padding:0 20px;border-radius:14px;border:1px solid var(--ln);background:var(--s2);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .btn:hover{border-color:#4a4440}
 .btn.p{background:var(--wine2);border-color:var(--wine2);color:#fff}.btn.p:hover{background:#ae2a38}
 .btn.w{width:100%}.btn.s{min-height:44px;padding:0 14px;font-size:15px}
 .btn[disabled]{opacity:.45;cursor:default}
-.cnt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:18px}
-.cnt button{background:none;border:1px solid var(--ln);border-radius:14px;padding:10px 8px;text-align:left;min-height:64px}
-.cnt b{display:block;font:800 26px/1.1 var(--sans)}.cnt span{color:var(--mu);font-size:14px}
+.cnt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.cnt button{background:none;border:1px solid var(--ln);border-radius:12px;padding:8px 10px;text-align:left;min-height:52px}
+.cnt b{display:block;font:800 22px/1.1 var(--sans)}.cnt span{color:var(--mu);font-size:14px}
 .cnt .h b{color:var(--rose)}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:18px;text-align:center}
-.week i{display:block;aspect-ratio:1;max-width:44px;margin:0 auto 6px;border-radius:50%;border:1.5px solid var(--ln)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px;text-align:center}
+.week i{display:block;aspect-ratio:1;max-width:34px;margin:0 auto 4px;border-radius:50%;border:1.5px solid var(--ln)}
 .week .on i{background:var(--wine2);border-color:var(--wine2)}.week .now i{border-color:var(--rose)}
 .week span{font-size:13px;color:var(--dim)}.week .now span{color:var(--ink)}
-.wotd{font:800 clamp(38px,6vw,52px)/1 var(--sans);letter-spacing:-.02em;margin:12px 0 4px}
-.tr{font:600 clamp(28px,4vw,38px)/1.1 var(--serif);color:var(--ink)}
-.spk{width:52px;height:52px;flex:none;border-radius:50%;border:0;background:var(--wine2);display:grid;place-items:center}
+.wotd{font:800 clamp(30px,4vw,40px)/1 var(--sans);letter-spacing:-.02em;margin:8px 0 2px}
+.tr{font:600 clamp(26px,3.4vw,34px)/1.1 var(--serif);color:var(--ink)}
+.spk{width:46px;height:46px;flex:none;border-radius:50%;border:0;background:var(--wine2);display:grid;place-items:center}
 .spk svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ex{position:relative;background:var(--s2);border:1px solid var(--ln);border-radius:16px;padding:18px 64px 18px 18px;font:500 italic 20px/1.4 var(--serif);color:#e6ded2;margin-top:10px}
+.ex{position:relative;background:var(--s2);border:1px solid var(--ln);border-radius:14px;padding:12px 58px 12px 14px;font:500 italic 19px/1.35 var(--serif);color:#e6ded2;margin-top:8px}
 .lv{position:absolute;top:12px;right:12px;font:700 13px/1 var(--sans);letter-spacing:.06em;padding:6px 9px;border-radius:8px;background:var(--wine);color:#fff;font-style:normal}
-.lvs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.lvb{min-width:52px;min-height:40px;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:none;color:var(--mu);font:700 14px var(--sans);letter-spacing:.04em}
+.lvs{display:flex;flex-wrap:wrap;gap:5px}
+.lvb{min-width:40px;min-height:34px;padding:0 7px;border-radius:9px;font-size:13px!important;border:1px solid var(--ln);background:none;color:var(--mu);font:700 14px var(--sans);letter-spacing:.04em}
 .lvb.has{color:var(--ink);border-color:#4a4440}.lvb.cur{background:var(--wine2);border-color:var(--wine2);color:#fff}
 .lvb.load{animation:pl 1s infinite}@keyframes pl{50%{opacity:.4}}
 .wl{font:700 13px/1 var(--sans);letter-spacing:.06em;padding:7px 10px;border-radius:99px;background:var(--ink);color:#111}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.tag{padding:6px 12px;border-radius:99px;background:rgba(155,35,48,.18);color:#f0b6bc;font-size:14px;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{padding:5px 11px;border-radius:99px;background:rgba(155,35,48,.18);color:#f0b6bc;font-size:14px;font-weight:500}
 .st{font:700 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;padding:7px 10px;border-radius:99px;border:1px solid var(--ln);color:var(--mu)}
 .st.hard{color:var(--rose);border-color:#5a2a2f}.st.mastered{color:var(--ok);border-color:#34402e}
 /* flip card */
-.lhead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.lhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .lhead .bar{flex:1;margin:0}
 .flip{perspective:1800px;cursor:pointer;outline:none}
 .inner{display:grid;transition:transform .6s cubic-bezier(.2,.75,.2,1);transform-style:preserve-3d}
 .flip.on .inner{transform:rotateY(180deg)}
-.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;min-height:440px;display:flex;flex-direction:column}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;min-height:clamp(250px,calc(100dvh - 330px),430px);display:flex;flex-direction:column}
 .back{transform:rotateY(180deg)}
 .flip.on .front,.flip:not(.on) .back{pointer-events:none}
 .front .word{font:800 clamp(52px,11vw,104px)/.95 var(--sans);letter-spacing:-.035em;margin:auto 0 0;overflow-wrap:anywhere}
 .gloss{display:flex;align-items:center;gap:12px;margin:14px 0 auto;font:500 italic 24px var(--serif);color:var(--mu)}
 .gloss::before{content:"";width:56px;height:2px;background:var(--wine2)}
-.back .sec{margin-top:18px}
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.back .sec{margin-top:12px}.def{color:var(--mu);margin:4px 0 0;font-size:16px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .done{text-align:center;padding:56px 20px}
 /* games */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
-.tile{text-align:left;background:var(--s1);border:1px solid var(--ln);border-radius:22px;padding:24px;min-height:180px;display:flex;flex-direction:column;gap:8px}
+.tile{text-align:left;background:var(--s1);border:1px solid var(--ln);border-radius:20px;padding:18px 20px;min-height:150px;display:flex;flex-direction:column;gap:8px}
 .tile:hover{border-color:#4a4440}
 .tile b{font:800 26px/1.1 var(--sans)}.tile em{font:600 20px var(--serif);color:var(--mu);margin-top:auto}
-.q{font:800 clamp(24px,4vw,34px)/1.2 var(--sans);letter-spacing:-.015em;margin:10px 0 22px}
+.q{font:800 clamp(21px,3.2vw,30px)/1.2 var(--sans);letter-spacing:-.015em;margin:6px 0 14px}
 .q.serif{font:500 italic clamp(22px,3.4vw,30px)/1.35 var(--serif)}
-.opts{display:grid;gap:10px}
-.opt{display:flex;align-items:center;gap:14px;text-align:left;min-height:60px;padding:10px 16px;border-radius:16px;border:1px solid var(--ln);background:var(--s2);font-size:18px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;min-height:52px;padding:8px 14px;border-radius:16px;border:1px solid var(--ln);background:var(--s2);font-size:18px}
 .opt i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--bg);color:var(--rose);font:700 14px var(--sans);font-style:normal}
 .opt.good{border-color:#5d7a51;background:#1b2418}.opt.bad{border-color:#7a2a33;background:#2a1517}
 .match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -121,10 +121,10 @@ h2{font:800 30px/1.1 var(--sans);letter-spacing:-.02em;margin:0}
 .m.err{animation:sh .3s}
 @keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 /* forms + lists */
-form{display:grid;gap:16px}
+form{display:grid;gap:12px}
 label.f{display:grid;gap:8px}
-.in{width:100%;min-height:52px;padding:12px 16px;border-radius:14px;border:1px solid var(--ln);background:#0f0e0e;font-size:16px}
-textarea.in{min-height:96px;resize:vertical}
+.in{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--ln);background:#0f0e0e;font-size:16px}
+textarea.in{min-height:74px;resize:vertical}
 .two{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px}
 .wrow{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:10px;align-items:end}
 .lvsel{padding:12px 10px;font-weight:700;text-align:center;color:#f0b6bc;border-color:#5a2a2f}
@@ -147,13 +147,19 @@ textarea.in{min-height:96px;resize:vertical}
 .ib.warn{border-color:var(--wine2);color:#fff;background:var(--wine2);width:auto;padding:0 10px;font-size:14px}
 .toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:#111;padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-.foot{color:var(--dim);font-size:13px;margin-top:40px;letter-spacing:.14em;text-transform:uppercase}
+.fgrid{display:grid;gap:12px}@media(min-width:700px){.fgrid{grid-template-columns:1fr 1fr}.fgrid .span{grid-column:1/-1}}
 @media(max-width:899px){
 .app{grid-template-columns:1fr}
 .rail{position:fixed;inset:auto 0 0 0;height:auto;flex-direction:row;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--ln);background:rgba(10,10,10,.96);backdrop-filter:blur(10px);z-index:20}
 .mono{display:none}.nav{width:auto;flex:1}
-main{padding-bottom:120px;padding-top:max(20px,env(safe-area-inset-top))}
-.face{min-height:400px}
+main{padding-bottom:calc(76px + env(safe-area-inset-bottom));padding-top:max(14px,env(safe-area-inset-top))}
+.face{min-height:clamp(240px,calc(100dvh - 380px),420px)}
+.rule:not(.home){display:none}h2{margin-bottom:12px}.brand{font-size:36px}.rule.home{margin:4px 0 12px}
+.wotdc .hm{display:none}.wotdc .acts{grid-template-columns:1fr 1fr}.wotdc .btn{min-height:40px}.week i{max-width:28px}
+.two.keep{grid-template-columns:minmax(0,1fr) 88px}
+@media(max-width:600px){.card{padding:14px 16px}.big{font-size:40px}.cnt button{min-height:46px;padding:6px 10px}.cnt b{font-size:19px}.cnt span{font-size:13px}
+.wotdc .acts,.rule.home{display:none}.brand{margin-bottom:10px}.grid,.grid>div{gap:10px!important}.top{margin-bottom:10px}.cnt{margin-bottom:10px}.bar{margin:10px 0}form{gap:10px}label.f{gap:6px}.wotdc .spk{width:40px;height:40px}.wotd{font-size:28px}.wotdc .tr{font-size:22px}
+.week{margin-top:8px}.week i{max-width:26px}.btn.p.w{min-height:48px}}.tile{min-height:0}.tile em{display:none}.rule{margin:6px 0 12px}.ex{font-size:17px}
 }
 @media(max-width:600px){.two{grid-template-columns:1fr}.ex{font-size:18px}.match .m{font-size:15px}.cnt b{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.inner{transition:none}.bar i,.m,.toast{transition:none}}
@@ -175,7 +181,6 @@ main{padding-bottom:120px;padding-top:max(20px,env(safe-area-inset-top))}
       <span class="chip" id="streak"><i class="d"></i>0 day streak</span>
     </header>
     <div id="view"></div>
-    <p class="foot">Hercab · a Hermes Society app</p>
   </main>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -276,20 +281,21 @@ function home(){
   const t=Math.min(today(),GOAL),pct=Math.round(c.mastered/Math.max(1,S.words.length)*100),w=wotd();
   const mon=new Date();mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
   const wk=["M","T","W","T","F","S","S"].map((l,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const k=dk(d);return`<div class="${S.log[k]?"on":""} ${k===dk(Date.now())?"now":""}"><i></i><span>${l}</span></div>`}).join("");
-  V.innerHTML=`<h1 class="brand">Her<em>cab</em></h1><div class="rule"><span class="lab">Your words · everywhere</span></div>
+  V.innerHTML=`<h1 class="brand">Her<em>cab</em></h1><div class="rule home"><span class="lab">Your words · everywhere</span></div>
   <div class="grid">
    <section class="card"><div class="row"><p class="lab" style="color:var(--rose)">Today's review</p><span class="note">about ${Math.max(1,Math.ceil((GOAL-t)*0.2))} min</span></div>
     <div style="margin-top:14px"><span class="big">${t}/${GOAL}</span> <span style="color:var(--mu)">words reviewed</span></div>
     <div class="bar"><i style="width:${t/GOAL*100}%"></i></div>
     <div class="cnt"><button class="h" data-act="learn" data-f="hard"><b>${c.hard}</b><span>hard ›</span></button><button data-act="learn" data-f="learning"><b>${c.learning}</b><span>learning ›</span></button><button data-act="learn" data-f="new"><b>${c.new}</b><span>new ›</span></button></div>
     <button class="btn p w" data-act="learn">${t?"Continue review":"Start review"} →</button></section>
-   <section class="card"><div class="row"><p class="lab">This week</p><span class="chip" style="padding:6px 12px">${streak()} day streak</span></div><div class="week">${wk}</div></section>
-   <section class="card"><div class="row"><p class="lab">Word of the day</p>${spk(w.w)}</div>
-    <div class="wotd">${esc(w.w)}</div><div class="tr">${esc(w.tr)}</div><p style="color:var(--mu);margin:8px 0 0">${esc(w.def)}</p>
+   <div style="display:grid;gap:14px">
+   <section class="card"><div class="row"><p class="lab">This week</p><span class="note">${streak()} day streak</span></div><div class="week">${wk}</div>
+    <div class="row" style="margin-top:14px"><p class="lab">Mastery</p><span class="note">${c.mastered} of ${S.words.length} words · ${pct}%</span></div><div class="bar" style="margin-bottom:0"><i style="width:${pct}%"></i></div></section>
+   <section class="card wotdc" data-act="learn" data-first="${esc(w.id)}" style="cursor:pointer"><div class="row"><p class="lab">Word of the day</p>${spk(w.w)}</div>
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="wotd">${esc(w.w)}</span><span class="tr">${esc(w.tr)}</span></div><p class="def hm">${esc(w.def)}</p>
     <div id="wex" hidden>${exBox(w)}</div>
-    <div class="acts"><button class="btn s" data-act="wex">See example</button><button class="btn s" data-act="learn" data-first="${esc(w.id)}">Study now</button></div></section>
-   <section class="card"><div class="row"><p class="lab">Vocabulary mastery</p><span class="note">${c.mastered} of ${S.words.length} words</span></div>
-    <div class="big" style="margin-top:12px">${pct}%</div><div class="bar"><i style="width:${pct}%"></i></div></section>
+    <div class="acts hm2"><button class="btn s" data-act="wex">See example</button><button class="btn s" data-act="learn" data-first="${esc(w.id)}">Study now</button></div></section>
+   </div>
   </div>`}
 
 /* ---------- LEARN ---------- */
@@ -313,11 +319,8 @@ function learn(){
    <section class="card face front"><div class="row"><span class="st ${st}">${st}</span>${spk(w.w)}</div>
     <h2 class="word">${esc(w.w)}<sup class="wsup" title="Word level">${esc(w.wl)}</sup></h2><div class="gloss">tap to reveal</div><p class="note">Correct recalls: ${Math.min(w.c,3)} / 3</p></section>
    <section class="card face back"><div class="row"><p class="lab">${esc(w.w)} <span class="wsup sm">${esc(w.wl)}</span></p>${spk(w.w)}</div>
-    <div class="sec"><p class="lab">Türkçe</p>${w.tr?`<div class="tr" style="margin-top:6px">${esc(w.tr)}</div>`:`<button class="btn s" data-act="gettr" style="margin-top:8px">✦ Get Türkçe</button>`}</div>
-    <div class="sec"><p class="lab">Meaning</p><p style="margin:6px 0 0;font-size:18px">${esc(w.def)}</p></div>
-    <div class="sec"><div class="row"><p class="lab">Example · choose a level</p>${sample?`<button class="btn s" data-act="newex" style="min-height:36px">↻ Another</button>`:""}</div>
-    <div class="lvs">${LV.slice(1).map(l=>`<button class="lvb ${w.exs[l]?"has":""} ${l===w.lvl?"cur":""} ${busyLv===l?"load":""}" data-act="lvl" data-l="${l}" ${!sample&&!w.exs[l]?"disabled":""}>${l}</button>`).join("")}</div>${exBox(w)}</div>
-    ${w.col?`<div class="sec"><p class="lab">Common use</p>${tags(w)}</div>`:""}</section>
+    <div class="sec" style="margin-top:6px">${w.tr?`<div class="tr">${esc(w.tr)}</div>`:`<button class="btn s" data-act="gettr">✦ Get Türkçe</button>`}${w.def?`<p class="def">${esc(w.def)}</p>`:""}</div>
+    <div class="sec"><div class="row" style="gap:8px"><p class="lab">Example</p><div class="lvs">${LV.slice(1).map(l=>`<button class="lvb ${w.exs[l]?"has":""} ${l===w.lvl?"cur":""} ${busyLv===l?"load":""}" data-act="lvl" data-l="${l}">${l}</button>`).join("")}<button class="lvb" data-act="newex" aria-label="Another example" title="Another example">↻</button></div></div>${exBox(w)}${tags(w)}</div></section>
   </div></div>
   <div class="acts"><button class="btn" data-act="again">Review again</button><button class="btn p" data-act="know">Know it</button></div>`}
 function startLearnSilently(){const g=go;go=()=>{};startLearn();go=g}
@@ -388,11 +391,11 @@ function add(){
    <div class="wrow"><label class="f"><span class="lab">Word</span><input class="in" id="fw" required placeholder="e.g. legitimate" value="${esc(f.w||"")}"></label>
    <label class="f"><span class="lab">Level</span><select class="in lvsel" id="fwl" aria-label="Word level">${LV.map(l=>`<option ${l===(f.wl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
    ${sample?`<button type="button" class="btn w" data-act="ai" id="aib" style="border-color:var(--wine2);color:#f0b6bc">✦ Fill with AI</button>`:`<p class="note">AI fill isn't available in this view — type the details yourself.</p>`}
-   <label class="f"><span class="lab">Türkçe</span><input class="in" id="ftr" required placeholder="e.g. meşru" value="${esc(f.tr||"")}"></label>
+   <div class="fgrid"><label class="f"><span class="lab">Türkçe</span><input class="in" id="ftr" required placeholder="e.g. meşru" value="${esc(f.tr||"")}"></label>
    <label class="f"><span class="lab">Meaning · easy English</span><input class="in" id="fdef" placeholder="One short, simple sentence" value="${esc(f.def||"")}"></label>
-   <div class="two"><label class="f"><span class="lab">Example sentence</span><textarea class="in" id="fex" placeholder="Example sentence">${esc(f.ex||"")}</textarea></label>
-   <label class="f"><span class="lab">Sentence level</span><select class="in" id="flv">${LV.map(l=>`<option ${l===(f.lvl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
-   <label class="f"><span class="lab">Collocation</span><input class="in" id="fcol" placeholder="e.g. legitimate concern" value="${esc(f.col||"")}"></label>
+   <div class="two keep span"><label class="f"><span class="lab">Example sentence</span><textarea class="in" id="fex" placeholder="Example sentence">${esc(f.ex||"")}</textarea></label>
+   <label class="f"><span class="lab">Level</span><select class="in lvsel" id="flv">${LV.map(l=>`<option ${l===(f.lvl||"B2")?"selected":""}>${l}</option>`).join("")}</select></label></div>
+   <label class="f span"><span class="lab">Collocation</span><input class="in" id="fcol" placeholder="e.g. legitimate concern" value="${esc(f.col||"")}"></label></div>
    <div class="acts" style="margin-top:4px">${w?`<button type="button" class="btn" data-act="cancel">Cancel</button>`:`<button type="reset" class="btn">Clear</button>`}<button class="btn p">${w?"Save changes":"Add to Hercab"}</button></div>
   </form></section>`}
 async function aiFill(){
