@@ -361,7 +361,7 @@ function games(){
   if(G)return quizView();
   V.innerHTML=`<h2>Games</h2><div class="rule"><span class="lab">Play with your own words</span></div>
   <div class="tiles">
-   <button class="tile" data-act="game" data-g="quiz"><span class="lab">10 questions</span><b>Quiz</b><span style="color:var(--mu)">Meaning, Türkçe or English — pick the right one.</span><em>mixed</em></button>
+   <button class="tile" data-act="game" data-g="quiz"><span class="lab">10 questions</span><b>Quiz</b><span style="color:var(--mu)">English → Türkçe and Türkçe → English.</span><em>mixed</em></button>
    <button class="tile" data-act="game" data-g="match"><span class="lab">Against the clock</span><b>Match</b><span style="color:var(--mu)">Pair five English words with their Türkçe.</span><em>${S.best.match?"best "+S.best.match+"s":"new"}</em></button>
    <button class="tile" data-act="game" data-g="gap"><span class="lab">10 sentences</span><b>Fill the gap</b><span style="color:var(--mu)">Which word completes the example sentence?</span><em>in context</em></button>
   </div>`}
@@ -371,8 +371,8 @@ function gapOf(w){const r=new RegExp("\\b"+stem(w.w).replace(/[^a-z]/gi,"")+"\\w
 function newGame(g){
   if(S.words.length<5)return toast("Add at least 5 words to play");
   if(g==="match"){const ws=shuf(S.words.filter(w=>w.tr)).slice(0,5);if(ws.length<5)return toast("Need 5 words with Türkçe");G={type:"match",ws,left:shuf(ws),right:shuf(ws),sel:null,done:new Set(),t0:Date.now(),miss:0};return games()}
-  let pool=shuf(S.words);if(g==="gap")pool=pool.filter(gapOf);
-  const qs=pool.slice(0,10).map((w,i)=>{let m=g==="gap"?"gap":["def","en","tr"][i%3];if(!w.tr&&m!=="gap")m="def";if(!w.def&&m==="def")m=w.tr?"en":"gap";
+  let pool=shuf(S.words);pool=g==="gap"?pool.filter(gapOf):pool.filter(w=>w.tr);if(pool.length<4)return toast("Add Türkçe to a few more words first");
+  const qs=pool.slice(0,10).map((w,i)=>{const m=g==="gap"?"gap":i%2?"tr":"en";
     return m==="en"?{w,m,p:w.w,o:opts(w,"tr"),f:"tr",lab:"What is the Türkçe for"}:m==="tr"?{w,m,p:w.tr,o:opts(w,"w"),f:"w",lab:"Which English word means"}:m==="gap"?{w,m,p:gapOf(w),o:opts(w,"w"),f:"w",lab:"Fill the gap"}:{w,m,p:w.def,o:opts(w,"w"),f:"w",lab:"Which word means"}});
   G={type:g,qs,i:0,score:0,pick:null};games()}
 function quizView(){
