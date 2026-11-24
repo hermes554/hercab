@@ -261,7 +261,23 @@ const H={"Content-Type":"application/json",apikey:ANON,Authorization:"Bearer "+A
 const sample=true;let saveT=null,writing=false,pending=false,synced=null;
 const CK="hercab-sync-code";
 function newCode(){const a="abcdefghjkmnpqrstuvwxyz23456789",b=new Uint32Array(12);crypto.getRandomValues(b);return[...b].map(x=>a[x%a.length]).join("").replace(/(.{4})(?=.)/g,"$1-")}
-let code;try{code=localStorage.getItem(CK)}catch(e){}if(!code){code=newCode();try{localStorage.setItem(CK,code)}catch(e){}}
+let code,freshDevice=false;try{code=localStorage.getItem(CK)}catch(e){}if(!code){code=newCode();freshDevice=true;try{localStorage.setItem(CK,code)}catch(e){}}
+// Same merge rules the app will use.
+const key=w=>String(w.w||"").toLowerCase().trim();
+function mergeWord(x,y){const r={...x};for(const f of["tr","def","ex","col","wl","lvl"])if(!r[f]&&y[f])r[f]=y[f];
+  r.exs={...(y.exs||{}),...(x.exs||{})};r.c=Math.max(x.c||0,y.c||0);r.seen=!!(x.seen||y.seen);
+  if((y.due||0)>(x.due||0)){r.hard=y.hard;r.due=y.due}r.add=Math.min(x.add||0,y.add||0);return r}
+function mergeStates(a,b){
+  const del={...(b.del||{})};for(const[k,v]of Object.entries(a.del||{}))del[k]=Math.max(del[k]||0,v);
+  const map=new Map();
+  for(const w of[...(a.words||[]),...(b.words||[])]){const k=key(w);if(!k)continue;if(del[k]&&del[k]>(w.add||0))continue;const o=map.get(k);map.set(k,o?mergeWord(o,w):{...w,exs:{...(w.exs||{})}})}
+  const log={...(a.log||{})};for(const[k,v]of Object.entries(b.log||{}))log[k]=Math.max(log[k]||0,v);
+  const best={...(a.best||{})};for(const[k,v]of Object.entries(b.best||{}))best[k]=best[k]?Math.min(best[k],v):v;
+  return{v:1,t:Math.max(a.t||0,b.t||0),words:[...map.values()],log,best,del}}
+function sameWords(a,b){return JSON.stringify(a.words)===JSON.stringify(b.words)&&JSON.stringify(a.log)===JSON.stringify(b.log)}
+async function pull(rerender){try{const r=await rpc("hercab_get",{p_code:code});synced=true;if(!r||!Array.isArray(r.words))return true;
+  const m=fix(mergeStates(S,r));const changed=!sameWords(m,S);const remoteBehind=!sameWords(m,r);S=m;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(changed&&rerender&&location.hash!=="#add")render();return remoteBehind}catch(e){synced=false;return false}}
 async function rpc(fn,args){const r=await fetch(SB+"/rest/v1/rpc/"+fn,{method:"POST",headers:H,body:JSON.stringify(args)});if(!r.ok)throw new Error("sync "+r.status);const t=await r.text();return t?JSON.parse(t):null}
 async function api(body){
   try{const r=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j}catch(e){}
@@ -276,7 +292,7 @@ const status=w=>w.c>=3?"mastered":w.hard?"hard":w.seen?"learning":"new";
 const today=()=>S.log[dk(Date.now())]||0;
 function streak(){let n=0,d=new Date();if(!S.log[dk(d)])d.setDate(d.getDate()-1);while(S.log[dk(d)]){n++;d.setDate(d.getDate()-1)}return n}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(push,900)}
-async function push(){if(synced===false)return;if(writing){pending=true;return}writing=true;try{await rpc("hercab_put",{p_code:code,p_data:S});synced=true}catch(e){}writing=false;if(pending){pending=false;push()}}
+async function push(){if(writing){pending=true;return}writing=true;try{await pull(false);await rpc("hercab_put",{p_code:code,p_data:S});synced=true}catch(e){}writing=false;if(pending){pending=false;push()}}
 function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2200)}
 function speak(t){try{if(window.speechSynthesis){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";const v=speechSynthesis.getVoices().find(v=>v.lang==="en-GB");if(v)u.voice=v;u.rate=.92;speechSynthesis.speak(u);return}}catch(e){}}
 const canSpeak=()=>!!window.speechSynthesis;
@@ -294,7 +310,11 @@ function home(){
   const t=Math.min(today(),GOAL),pct=Math.round(c.mastered/Math.max(1,S.words.length)*100),w=wotd();
   const mon=new Date();mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
   const wk=["M","T","W","T","F","S","S"].map((l,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);const k=dk(d);return`<div class="${S.log[k]?"on":""} ${k===dk(Date.now())?"now":""}"><i></i><span>${l}</span></div>`}).join("");
-  V.innerHTML=`<h1 class="brand">Her<em>cab</em></h1><div class="rule home"><span class="lab">Your words · everywhere</span></div>
+  const onb=freshDevice&&(()=>{try{return!localStorage.getItem("hercab-onboard")}catch(e){return true}})();
+  V.innerHTML=`${onb?`<section class="card" style="margin-bottom:12px;border-color:var(--wine2)"><p class="lab" style="color:var(--rose)">Already using Hercab?</p>
+   <p style="margin:6px 0 10px;color:var(--mu)">Enter the sync code from your other device (Stats → Sync) so your words stay together.</p>
+   <div class="two keep" style="grid-template-columns:minmax(0,1fr) auto auto"><input class="in" id="onbcode" placeholder="Sync code" autocomplete="off" autocapitalize="off"><button class="btn p" data-act="usecode" data-in="#onbcode">Use</button><button class="btn" data-act="onbno">New here</button></div></section>`:""}
+  <h1 class="brand">Her<em>cab</em></h1><div class="rule home"><span class="lab">Your words · everywhere</span></div>
   <div class="grid">
    <section class="card"><div class="row"><p class="lab" style="color:var(--rose)">Today's review</p><span class="note">about ${Math.max(1,Math.ceil((GOAL-t)*0.2))} min</span></div>
     <div style="margin-top:14px"><span class="big">${t}/${GOAL}</span> <span style="color:var(--mu)">words reviewed</span></div>
@@ -424,7 +444,7 @@ function submit(e){
   const data={w,tr:g("ftr"),def:g("fdef"),ex:g("fex"),lvl:g("flv"),wl:lvOf(w)||"B2",col:g("fcol")};
   if(A.id){const o=byId(A.id);o.exs=o.exs||{};if(data.ex)o.exs[data.lvl]=data.ex;Object.assign(o,data);A.id=null;save();toast("Saved");return go("stats")}
   if(S.words.some(x=>x.w.toLowerCase()===w.toLowerCase()))return toast(`“${w}” is already in Hercab`);
-  S.words.unshift({id:"u"+Date.now().toString(36),...data,exs:data.ex?{[data.lvl]:data.ex}:{},c:0,hard:false,seen:false,due:0});save();toast(`Added “${w}”`);add()}
+  if(S.del)delete S.del[w.toLowerCase()];S.words.unshift({id:"u"+Date.now().toString(36),add:Date.now(),...data,exs:data.ex?{[data.lvl]:data.ex}:{},c:0,hard:false,seen:false,due:0});save();toast(`Added “${w}”`);add()}
 const LVD={A2:"very simple, short, everyday words",B1:"simple and clear, common vocabulary",B2:"natural, moderately complex",C1:"advanced, with a subordinate clause and academic vocabulary",C2:"sophisticated, nuanced, like a quality newspaper or essay"};
 async function genEx(w,l,avoid){
   const r=await api({mode:"example",word:w.w,def:w.def,level:l,avoid:avoid||""});
@@ -454,7 +474,7 @@ function stats(){
    <div class="shelves">${LV.map(l=>{const ws=S.words.filter(w=>w.wl===l),m=ws.filter(w=>status(w)==="mastered").length;return`<button class="shelf ${LF===l?"on":""}" data-act="shelf" data-lv="${l}"><b>${l}</b><span>${ws.length} word${ws.length===1?"":"s"}</span><u><i style="width:${ws.length?m/ws.length*100:0}%"></i></u></button>`}).join("")}</div><p class="note" style="margin-top:10px;font-size:13px">Word levels from the CEFR-J Vocabulary Profile 1.5 (Tono Laboratory, TUFS) and the Octanove C1/C2 profile (CC BY-SA 4.0).</p></section>
   <div class="grid" style="margin-top:14px">
    <section class="card"><div class="row"><p class="lab">Sync</p><span class="note">${synced?"saved to cloud":synced===false?"offline":"connecting…"}</span></div>
-    <p style="margin:12px 0 6px;color:var(--mu)">Your sync code. Enter it on your other device to share words and progress.</p>
+    <p style="margin:12px 0 6px;color:var(--mu)">Use this same code on every device (Safari, home-screen app, phone). You can also type a code of your own, 10+ characters.</p>
     <div class="row"><b style="font:800 24px var(--sans);letter-spacing:.04em">${esc(code)}</b><button class="btn s" data-act="copycode">Copy</button></div>
     <div class="two" style="margin-top:14px;grid-template-columns:minmax(0,1fr) auto"><input class="in" id="codein" placeholder="Code from another device" autocomplete="off"><button class="btn" data-act="usecode">Use</button></div></section>
    <section class="card"><p class="lab">Last 7 days</p><div class="days">${days.map(d=>`<div><span>${d.l}</span><u><i style="width:${d.n/mx*100}%"></i></u><em>${d.n}</em></div>`).join("")}</div></section>
@@ -469,9 +489,12 @@ function list(){
    <button class="ib ${del===w.id?"warn":""}" data-act="del" data-id="${esc(w.id)}" aria-label="Delete ${esc(w.w)}">${del===w.id?"Delete?":"✕"}</button></div>`).join(""):`<p class="note" style="padding:16px 0">No words match “${esc(Q)}”.</p>`}
 
 async function copyCode(){try{await navigator.clipboard.writeText(code);toast("Code copied")}catch(e){toast(code)}}
-async function useCode(){const c=($("#codein").value||"").trim().toLowerCase();if(c.length<10)return toast("That code looks too short");
-  try{const r=await rpc("hercab_get",{p_code:c});if(!r||!Array.isArray(r.words))return toast("No data for that code");
-    code=c;try{localStorage.setItem(CK,c)}catch(e){}S=fix(r);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}synced=true;L=null;G=null;toast("Synced — "+S.words.length+" words");stats()}
+async function useCode(inp){const c=(($(inp||"#codein")||{}).value||"").trim().toLowerCase().replace(/\s+/g,"-");if(c.length<10)return toast("Use at least 10 characters");
+  try{const r=await rpc("hercab_get",{p_code:c});const before=S.words.length;
+    if(r&&Array.isArray(r.words))S=fix(mergeStates(S,r));
+    code=c;try{localStorage.setItem(CK,c);localStorage.setItem("hercab-onboard","1")}catch(e){}freshDevice=false;
+    try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}await rpc("hercab_put",{p_code:code,p_data:S});synced=true;L=null;G=null;
+    toast(r?"Synced — "+S.words.length+" words":"New code saved — use it on your other devices");render()}
   catch(e){toast("Couldn't reach sync")}}
 /* ---------- ROUTER + EVENTS ---------- */
 const VIEWS={home,learn,games,add,stats};
@@ -487,12 +510,12 @@ document.addEventListener("click",e=>{
    case"say":speak(d.t);break;
    case"learn":startLearn(d.f,d.first,d.lv);break;case"shelf":LF=LF===d.lv?"":d.lv;stats();if(LF)$("#words").scrollIntoView({behavior:"smooth",block:"start"});break;
    case"wex":$("#wex").hidden=!$("#wex").hidden;a.textContent=$("#wex").hidden?"See example":"Hide example";break;
-   case"know":grade(true);break;case"again":grade(false);break;case"swap":swap();break;case"prev":step(-1);break;case"next":step(1);break;case"newex":newEx();break;case"lvl":setLvl(d.l);break;case"gettr":getTr();break;case"copycode":copyCode();break;case"usecode":useCode();break;
+   case"know":grade(true);break;case"again":grade(false);break;case"swap":swap();break;case"prev":step(-1);break;case"next":step(1);break;case"newex":newEx();break;case"lvl":setLvl(d.l);break;case"gettr":getTr();break;case"copycode":copyCode();break;case"usecode":useCode(d.in);break;case"onbno":try{localStorage.setItem("hercab-onboard","1")}catch(e){}freshDevice=false;home();break;
    case"game":newGame(d.g);break;case"gexit":G=null;games();break;case"pick":pick(+d.i);break;case"gnext":G.i++;G.pick=null;quizView();break;
    case"m":m(d.id,d.side,a);break;
    case"ai":aiFill();break;case"cancel":A.id=null;go("stats");break;
    case"edit":A.id=d.id;go("add");if(location.hash==="#add")add();break;
-   case"del":if(del===d.id){const w=byId(d.id);S.words=S.words.filter(x=>x.id!==d.id);del=null;save();toast(`Deleted “${w.w}”`);stats()}else{del=d.id;list()}break;
+   case"del":if(del===d.id){const w=byId(d.id);S.del=S.del||{};S.del[w.w.toLowerCase().trim()]=Date.now();S.words=S.words.filter(x=>x.id!==d.id);del=null;save();toast(`Deleted “${w.w}”`);stats()}else{del=d.id;list()}break;
    case"reset":if(del==="reset"){S.words.forEach(w=>{w.c=0;w.hard=false;w.seen=false;w.due=0});S.log={};S.best={};del=null;save();toast("Progress reset");stats()}else{del="reset";stats()}break;
   }});
 document.addEventListener("submit",e=>{if(e.target.id==="fm")submit(e)});
@@ -506,13 +529,9 @@ if(S.migrated){const n=S.migrated;setTimeout(()=>toast("Brought over "+n+" words
 
 /* ---------- WORD LEVELS ---------- */
 fetch("/levels.json").then(r=>r.json()).then(j=>{LVMAP=new Map();for(const l of LV)for(const w of String(j[l]||"").split(" "))if(w)LVMAP.set(w,l);if(relevel())save();render()}).catch(()=>{});
-/* ---------- SYNC + MIGRATION ---------- */
-(async()=>{
-  try{const r=await rpc("hercab_get",{p_code:code});
-    if(r&&Array.isArray(r.words)&&(r.t||0)>(S.t||0)){S=fix(r);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}synced=true;L=null;G=null;render();return}
-    synced=true;push()}
-  catch(e){synced=false;setTimeout(()=>{synced=null;push()},30000)}
-})();
+/* ---------- SYNC ---------- */
+(async()=>{const behind=await pull(true);if(synced&&behind)push()})();
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")pull(true);else if(saveT){clearTimeout(saveT);push()}});
 }
 </script>
 </body>
