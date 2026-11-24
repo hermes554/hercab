@@ -249,8 +249,11 @@ async function api(body){
   try{const r=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j}catch(e){}
   try{const r=await fetch(SB+"/functions/v1/hercab-ai",{method:"POST",headers:H,body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(r.ok&&!j.error)return j;if(body.mode!=="fill")throw new Error(j.error||"ai "+r.status)}
   catch(e){if(body.mode!=="fill")throw e}
+  if(body.mode==="trOnly")return{tr:await trFree(body.word)};
   const r=await fetch(VAL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({word:body.word})});const j=await r.json();
-  if(!r.ok||!j.definition)throw new Error("ai");return{def:j.definition,ex:j.example,col:j.collocation}}
+  if(!r.ok||!j.definition)throw new Error("ai");return{tr:await trFree(body.word),def:j.definition,ex:j.example,col:j.collocation}}
+async function trFree(w){try{const r=await fetch("https://api.mymemory.translated.net/get?langpair=en|tr&q="+encodeURIComponent(w));const j=await r.json();const t=String(j?.responseData?.translatedText||"").trim();
+  return t&&t.toLowerCase()!==String(w).toLowerCase()&&!/MYMEMORY|QUERY LENGTH/i.test(t)?t.toLocaleLowerCase("tr"):""}catch(e){return""}}
 const status=w=>w.c>=3?"mastered":w.hard?"hard":w.seen?"learning":"new";
 const today=()=>S.log[dk(Date.now())]||0;
 function streak(){let n=0,d=new Date();if(!S.log[dk(d)])d.setDate(d.getDate()-1);while(S.log[dk(d)]){n++;d.setDate(d.getDate()-1)}return n}
