@@ -509,7 +509,7 @@ const AERR=m=>/Email not confirmed/i.test(m)?"Your account isn't activated yet â
 async function authSubmit(mode){const em=$("#aemail").value.trim().toLowerCase(),pw=$("#apw").value;aEm=em;aPw=pw;if(!em||pw.length<6)return toast("Email and a 6+ character password");
   authBusy=true;authMsg="";acctRefresh();
   try{if(mode==="signup"){const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:location.origin}});if(error)throw error;
-      authMsg=data.session?"":"Account created. Open the activation email in "+em+", tap the link, then come back and log in.";
+      authMsg=data.session?"":"Account created. Open the email from Supabase in "+em+" and tap the activation link. If it opens an empty or error page, that is fine: your account is already active. Come back here and tap Log in.";
       if(data.user&&data.user.identities&&!data.user.identities.length)authMsg="This email already has an account â€” log in instead."}
     else{const{error}=await sb.auth.signInWithPassword({email:em,password:pw});if(error)throw error;authMsg="";aPw=""}}
   catch(e){authMsg=AERR(String(e.message||e))}
